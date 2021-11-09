@@ -1,5 +1,7 @@
 import pygame
 
+GRAVITY = pygame.math.Vector2(0, 0.3)
+
 background_colour = (0, 0, 100) # rgb colors - this is dark blue
 (width, height) = (1280, 720) # resolution of game window
 screen = pygame.display.set_mode((width, height)) # creates screen
@@ -21,7 +23,7 @@ def main(): # main game
         "P                                          P",
         "P                                          P",
         "P    PPPPPPPP                              P",
-        "P                                          P",
+        "P                     S                    P",
         "P                          PPPPPPP         P",
         "P                 PPPPPP                   P",
         "P                                          P",
@@ -35,7 +37,7 @@ def main(): # main game
         "P                                          P",
         "P                                          P",
         "P                                          P",
-        "PS                                         P",
+        "P                                          P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
@@ -66,6 +68,11 @@ def main(): # main game
         for event in pygame.event.get(): # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
                 running = False
+        for platform in platforms:
+            for player in players:
+                player.collide(platforms)
+
+
 
 
 class Player(pygame.sprite.Sprite): # player class
@@ -75,20 +82,68 @@ class Player(pygame.sprite.Sprite): # player class
         self.image.fill((255, 255, 255)) # makes the player white
         self.rect = self.image.get_rect(topleft=pos) # sets the location of the player to the top left corner of the surface
 
+
+        self.vel = pygame.math.Vector2(0, 0)
+
+
         self.speed = 1 # gives speed variable to player
+        self.speedMax = 5
+        self.onGround = False
 
     def update(self): # keyboard inputs for player
+        self.vel += GRAVITY
+
+        #FRICTION:
+        print(self.vel.x)
+        self.vel.x = (self.vel.x / 1.2)
+
         keys = pygame.key.get_pressed() # pygame keyboard handler
         if keys[pygame.K_a]:
-            self.rect.x -= self.speed
+            self.vel.x -= self.speed
         if keys[pygame.K_d]:
-            self.rect.x += self.speed
+            self.vel.x += self.speed
         if keys[pygame.K_w]:
-            self.rect.y -= self.speed
+            self.vel.y -= self.speed
         if keys[pygame.K_s]:
-            self.rect.y += self.speed
+            self.vel.y += self.speed
         # these if statements adjust the coordinates of the player based on WASD movements
         # 1 pixel per frame per speed setting (default speed is 1)
+
+        if (self.vel.x > self.speedMax):
+            self.vel.x = self.speedMax
+
+        if(self.vel.x < -self.speedMax):
+            self.vel.x = -self.speedMax
+
+        if (self.vel.y > self.speedMax):
+            self.vel.y = self.speedMax
+
+        if (self.vel.y < -self.speedMax):
+            self.vel.y = -self.speedMax
+
+
+        self.rect.x += int(self.vel.x)
+        self.rect.y += int(self.vel.y)
+    def collide(self, platforms):
+        for p in platforms:
+            if pygame.sprite.collide_rect(self, p):
+                # if self.vel.x > 0:
+                #     self.rect.right = p.rect.left
+                #     print("here")
+                # elif self.vel.x < 0:
+                #     self.rect.left = p.rect.right
+                #     print("here")
+                if self.vel.y > 0:
+                    self.rect.bottom = p.rect.top
+                    self.onGround = True
+                    self.vel.y = 0
+                if self.vel.y < 0:
+                    self.rect.top = p.rect.bottom
+                if self.rect.top == p.rect.bottom:
+                    self.vel.y = 0
+                if self.onGround:
+                    self.vel.y = 0
+
 
 class Platform(pygame.sprite.Sprite): # similar to player class but for platforms
     def __init__(self, pos, *groups): # constructs platforms
