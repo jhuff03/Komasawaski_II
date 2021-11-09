@@ -10,7 +10,7 @@ TILE_SIZE = 32
 
 def main(): # main game
 
-
+# list represents level
     level = [
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
         "P                                          P",
@@ -42,14 +42,14 @@ def main(): # main game
     level_height = len(level) * TILE_SIZE
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
-    players = pygame.sprite.Group()
-    platforms = pygame.sprite.Group()
+    players = pygame.sprite.Group() # creates players group which can be tracked
+    platforms = pygame.sprite.Group() # creates platforms group which can be tracked
 
     # build the level
-    for row in range(0, len(level)):
+    for row in range(0, len(level)): # traverse 2d array, put platforms at P and spawns the player at S
         for col in range(0, len(level[0])):
             if level[row][col] == "S":
-                Player((col * TILE_SIZE, row * TILE_SIZE), entities, players)  # player (0,0 is the spawn location, entities is the group it is in)
+                Player((col * TILE_SIZE, row * TILE_SIZE), entities, players)
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
 
@@ -90,12 +90,12 @@ class Player(pygame.sprite.Sprite): # player class
         # these if statements adjust the coordinates of the player based on WASD movements
         # 1 pixel per frame per speed setting (default speed is 1)
 
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, pos, *groups):
-        super().__init__(*groups)
-        self.image = pygame.Surface((32, 32))
-        self.image.fill((255, 0, 0))
-        self.rect = self.image.get_rect(topleft=pos)
+class Platform(pygame.sprite.Sprite): # similar to player class but for platforms
+    def __init__(self, pos, *groups): # constructs platforms
+        super().__init__(*groups) # initializes groups
+        self.image = pygame.Surface((32, 32)) # platforms are 32x32 and only to be placed every 32 pixels.
+        self.image.fill((255, 0, 0)) # red
+        self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
 
 
 main()
