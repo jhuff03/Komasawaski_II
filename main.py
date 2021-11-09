@@ -9,7 +9,7 @@ screen.fill(background_colour) # puts color onto screen
 pygame.display.flip() # updates display settings
 
 TILE_SIZE = 32
-
+clock = pygame.time.Clock()
 def main(): # main game
 
 # list represents level
@@ -58,6 +58,9 @@ def main(): # main game
     running = True
 
     while running: # game loop
+        clock.tick(100)
+        print("FPS:", int(clock.get_fps()))
+
         screen.fill(background_colour) # fills background color every frame
 
         entities.draw(screen) # draws every entity every frame
@@ -94,7 +97,6 @@ class Player(pygame.sprite.Sprite): # player class
         self.vel += GRAVITY
 
         #FRICTION:
-        print(self.vel.x)
         self.vel.x = (self.vel.x / 1.2)
 
         keys = pygame.key.get_pressed() # pygame keyboard handler
