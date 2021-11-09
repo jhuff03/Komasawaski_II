@@ -10,6 +10,8 @@ pygame.display.flip() # updates display settings
 
 TILE_SIZE = 32
 clock = pygame.time.Clock()
+
+
 def main(): # main game
 
 # list represents level
@@ -72,15 +74,27 @@ def main(): # main game
             if event.type == pygame.QUIT:
                 running = False
 
+
+
         for player in players:
             for platform in platforms:
                 if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
                     player.vel.x = 0
-                if platform.rect.colliderect(player.rect.x, player.rect.y + 2 * player.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
-                    if player.vel.y < 0:
-                        player.vel.y = 0
+                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
                     if player.vel.y >= 0:
                         player.vel.y = 0
+                        player.onGround = True
+
+                    if player.vel.y < 0:
+                        player.vel.y = 0
+                        player.onGround = False
+
+
+
+
+
+
+
 
 
 class Player(pygame.sprite.Sprite): # player class
@@ -97,23 +111,21 @@ class Player(pygame.sprite.Sprite): # player class
         self.speed = 1 # gives speed variable to player
         self.speedMax = 5
         self.onGround = False
+        self.jumpStrength = 10
 
     def update(self): # keyboard inputs for player
         self.vel += GRAVITY
-
-
 
         keys = pygame.key.get_pressed() # pygame keyboard handler
         if keys[pygame.K_a]:
             self.vel.x -= self.speed
         if keys[pygame.K_d]:
             self.vel.x += self.speed
-        if keys[pygame.K_w]:
-            self.vel.y -= self.speed
-        if keys[pygame.K_s]:
-            self.vel.y += self.speed
-        # these if statements adjust the coordinates of the player based on WASD movements
-        # 1 pixel per frame per speed setting (default speed is 1)
+
+
+        if keys[pygame.K_SPACE] and self.onGround:
+            self.vel.y -= self.jumpStrength
+            self.onGround = False
 
         if (self.vel.x > self.speedMax):
             self.vel.x = self.speedMax
@@ -124,14 +136,16 @@ class Player(pygame.sprite.Sprite): # player class
         if (self.vel.y > self.speedMax):
             self.vel.y = self.speedMax
 
-        if (self.vel.y < -self.speedMax):
-            self.vel.y = -self.speedMax
+        # if (self.vel.y < -self.speedMax):
+        #     self.vel.y = -self.speedMax
 
         # FRICTION:
         self.vel.x = (self.vel.x / 1.2)
 
         self.rect.x += int(self.vel.x)
         self.rect.y += int(self.vel.y)
+
+
 
 
 class Platform(pygame.sprite.Sprite): # similar to player class but for platforms
