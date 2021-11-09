@@ -69,6 +69,8 @@ def main(): # main game
             if event.type == pygame.QUIT:
                 running = False
 
+        for player in players:
+            player.collide(platforms)
 
 
 
