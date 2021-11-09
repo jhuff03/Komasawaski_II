@@ -68,9 +68,7 @@ def main(): # main game
         for event in pygame.event.get(): # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
                 running = False
-        for platform in platforms:
-            for player in players:
-                player.collide(platforms)
+
 
 
 
