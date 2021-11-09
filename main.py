@@ -73,9 +73,14 @@ def main(): # main game
                 running = False
 
         for player in players:
-            player.collide(platforms)
-
-
+            for platform in platforms:
+                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
+                    player.vel.x = 0
+                if platform.rect.colliderect(player.rect.x, player.rect.y + 2 * player.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
+                    if player.vel.y < 0:
+                        player.vel.y = 0
+                    if player.vel.y >= 0:
+                        player.vel.y = 0
 
 
 class Player(pygame.sprite.Sprite): # player class
@@ -96,8 +101,7 @@ class Player(pygame.sprite.Sprite): # player class
     def update(self): # keyboard inputs for player
         self.vel += GRAVITY
 
-        #FRICTION:
-        self.vel.x = (self.vel.x / 1.2)
+
 
         keys = pygame.key.get_pressed() # pygame keyboard handler
         if keys[pygame.K_a]:
@@ -123,28 +127,11 @@ class Player(pygame.sprite.Sprite): # player class
         if (self.vel.y < -self.speedMax):
             self.vel.y = -self.speedMax
 
+        # FRICTION:
+        self.vel.x = (self.vel.x / 1.2)
 
         self.rect.x += int(self.vel.x)
         self.rect.y += int(self.vel.y)
-    def collide(self, platforms):
-        for p in platforms:
-            if pygame.sprite.collide_rect(self, p):
-                # if self.vel.x > 0:
-                #     self.rect.right = p.rect.left
-                #     print("here")
-                # elif self.vel.x < 0:
-                #     self.rect.left = p.rect.right
-                #     print("here")
-                if self.vel.y > 0:
-                    self.rect.bottom = p.rect.top
-                    self.onGround = True
-                    self.vel.y = 0
-                if self.vel.y < 0:
-                    self.rect.top = p.rect.bottom
-                if self.rect.top == p.rect.bottom:
-                    self.vel.y = 0
-                if self.onGround:
-                    self.vel.y = 0
 
 
 class Platform(pygame.sprite.Sprite): # similar to player class but for platforms
