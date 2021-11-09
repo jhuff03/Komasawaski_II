@@ -6,14 +6,54 @@ screen = pygame.display.set_mode((width, height)) # creates screen
 screen.fill(background_colour) # puts color onto screen
 pygame.display.flip() # updates display settings
 
+TILE_SIZE = 32
 
 def main(): # main game
-    running = True
 
-    entities = pygame.sprite.Group() # creates entities group which can be tracked
+
+    level = [
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P                    PPPPPPPPPPP           P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P    PPPPPPPP                              P",
+        "P                                          P",
+        "P                          PPPPPPP         P",
+        "P                 PPPPPP                   P",
+        "P                                          P",
+        "P         PPPPPPP                          P",
+        "P                                          P",
+        "P                     PPPPPP               P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "P                                          P",
+        "PS                                         P",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+
+    level_width = len(level[0]) * TILE_SIZE
+    level_height = len(level) * TILE_SIZE
+
+    entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()
+    platforms = pygame.sprite.Group()
 
-    player = Player((0,0), entities, players) # player (0,0 is the spawn location, entities is the group it is in)
+    # build the level
+    for row in range(0, len(level)):
+        for col in range(0, len(level[0])):
+            if level[row][col] == "S":
+                Player((col * TILE_SIZE, row * TILE_SIZE), entities, players)  # player (0,0 is the spawn location, entities is the group it is in)
+            if level[row][col] == "P":
+                Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
+
+    running = True
 
     while running: # game loop
         screen.fill(background_colour) # fills background color every frame
@@ -49,5 +89,13 @@ class Player(pygame.sprite.Sprite): # player class
             self.rect.y += self.speed
         # these if statements adjust the coordinates of the player based on WASD movements
         # 1 pixel per frame per speed setting (default speed is 1)
+
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)
+        self.image = pygame.Surface((32, 32))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(topleft=pos)
+
 
 main()
