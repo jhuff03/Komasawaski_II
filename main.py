@@ -1,19 +1,20 @@
 import pygame
 import sys
 
-GRAVITY = pygame.math.Vector2(0, 0.3)
 
 background_colour = (0, 0, 100) # rgb colors - this is dark blue
 (width, height) = (1280, 720) # resolution of game window
 screen = pygame.display.set_mode((width, height)) # creates screen
 screen.fill(background_colour) # puts color onto screen
 pygame.display.flip() # updates display settings
+clock = pygame.time.Clock()
 
 TILE_SIZE = 32
-clock = pygame.time.Clock()
+GRAVITY = pygame.math.Vector2(0, 0.3)
 
 
 def main(): # main game
+    coinCount = 0
 
 # list represents level
     level = [
@@ -29,14 +30,14 @@ def main(): # main game
         "P                     S                    P",
         "P                          PPPPPPP         P",
         "P                 PPPPPP                   P",
-        "P                                          P",
+        "P           ***                            P",
         "P         PPPPPPP                          P",
         "P                          E               P",
         "P                         PP               P",
         "P                     PPPPPP               P",
         "P                                          P",
         "P                                          P",
-        "P                                          P",
+        "P               ***                        P",
         "P              PPPPP                       P",
         "P                                          P",
         "P                                          P",
@@ -54,6 +55,7 @@ def main(): # main game
     smartEnemies = pygame.sprite.Group()
     smartEnemyTurnTriggers = pygame.sprite.Group()
     playerKillers = pygame.sprite.Group()
+    coins = pygame.sprite.Group()
 
 
     # build the level
@@ -69,6 +71,9 @@ def main(): # main game
                 SmartEnemy((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, playerKillers)
             if level[row][col] == "|":
                 SmartEnemyTurnTrigger((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemyTurnTriggers)
+            if level[row][col] == "*":
+                Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
+
 
     running = True
     while running: # game loop
@@ -118,15 +123,22 @@ def main(): # main game
                     else:
                         smartEnemy.direction = "left"
 
+        for player in players:
+            for coin in coins:
+                if coin.rect.colliderect(player.rect):
+                    coinCount += 1
+                    coin.kill()
+                    print(coinCount)
 
         for player in players:
             for playerKiller in playerKillers:
-                if playerKiller.rect.colliderect(player.rect):
+                if playerKiller.rect.colliderect(player.rect): #Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
                     main()
+
             for platform in platforms:
-                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
+                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, player.image.get_width(), player.image.get_height()): #X Collisions
                     player.vel.x = 0
-                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
+                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, player.image.get_width(), player.image.get_height()): #Y collisions
                     if player.vel.y >= 0:
                         player.vel.y = 0
                         player.onGround = True
@@ -139,7 +151,7 @@ def main(): # main game
 class Player(pygame.sprite.Sprite): # player class
     def __init__(self, pos, *groups): # constructor: uses position and however many groups to construct player
         super().__init__(*groups) # initializes every single group by adding player to each group
-        self.image = pygame.Surface((32, 32)) # creates player as a 32x32 surface
+        self.image = pygame.Surface((16, 32)) # creates player as a 16x32 surface
         self.image.fill((255, 255, 255)) # makes the player white
         self.rect = self.image.get_rect(topleft=pos) # sets the location of the player to the top left corner of the surface
 
@@ -241,5 +253,12 @@ class SmartEnemyTurnTrigger(pygame.sprite.Sprite): #These allow the level builde
         self.image = pygame.Surface((32, 32), pygame.SRCALPHA) #SRCALPHA allows for the tile to be transparent
         self.image.fill((0, 0, 0, 0)) #The last zero is the transparency
         self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
+
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups) # initializes groups
+        self.image = pygame.Surface((8, 8)) # coins are 8x8 and only to be placed every 32 pixels.
+        self.image.fill((255, 255, 0)) # yellow
+        self.rect = self.image.get_rect(center=pos) # coords assigned to center
 
 main()
