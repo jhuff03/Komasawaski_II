@@ -122,8 +122,13 @@ class Player(pygame.sprite.Sprite): # player class
         if keys[pygame.K_d]:
             self.vel.x += self.speed
 
+        if keys[pygame.K_LCTRL]:
+            self.speedMax = 7
+        else:
+            self.speedMax = 5
 
-        if keys[pygame.K_SPACE] and self.onGround:
+
+        if keys[pygame.K_SPACE] and self.onGround and self.speedMax == 5:
             self.vel.y -= self.jumpStrength
             self.onGround = False
 
@@ -140,7 +145,7 @@ class Player(pygame.sprite.Sprite): # player class
         #     self.vel.y = -self.speedMax
 
         # FRICTION:
-        self.vel.x = (self.vel.x / 1.2)
+        self.vel.x = (self.vel.x / 1.1)
 
         self.rect.x += int(self.vel.x)
         self.rect.y += int(self.vel.y)
