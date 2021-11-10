@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 GRAVITY = pygame.math.Vector2(0, 0.3)
 
@@ -18,19 +19,19 @@ def main(): # main game
     level = [
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
         "P                                          P",
+        "P           |          R                 | P",
         "P                                          P",
         "P                                          P",
         "P                                          P",
         "P                                          P",
-        "P                                          P",
-        "P                                          P",
+        "P   |    R   |                             P",
         "P    PPPPPPPP                              P",
         "P                     S                    P",
         "P                          PPPPPPP         P",
         "P                 PPPPPP                   P",
         "P                                          P",
         "P         PPPPPPP                          P",
-        "P                                          P",
+        "P                          E               P",
         "P                         PP               P",
         "P                     PPPPPP               P",
         "P                                          P",
@@ -39,7 +40,7 @@ def main(): # main game
         "P              PPPPP                       P",
         "P                                          P",
         "P                                          P",
-        "P                                          P",
+        "P                        E                 P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
@@ -48,7 +49,11 @@ def main(): # main game
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group() # creates players group which can be tracked
     platforms = pygame.sprite.Group() # creates platforms group which can be tracked
-
+    enemies = pygame.sprite.Group()
+    hasCollidePhysics = pygame.sprite.Group()
+    smartEnemies = pygame.sprite.Group()
+    smartEnemyTurnTriggers = pygame.sprite.Group()
+    playerKillers = pygame.sprite.Group()
 
 
     # build the level
@@ -58,6 +63,12 @@ def main(): # main game
                 Player((col * TILE_SIZE, row * TILE_SIZE), players)
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
+            if level[row][col] == "E":
+                Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, hasCollidePhysics, playerKillers)
+            if level[row][col] == "R":
+                SmartEnemy((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, playerKillers)
+            if level[row][col] == "|":
+                SmartEnemyTurnTrigger((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemyTurnTriggers)
 
     running = True
     while running: # game loop
@@ -76,7 +87,7 @@ def main(): # main game
 
         for event in pygame.event.get(): # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
-                running = False
+                sys.exit()
 
         for player in players:
             scroll = [-int(player.vel.x), -int(player.vel.y)]
@@ -84,7 +95,34 @@ def main(): # main game
                 entity.rect.x += scroll[0]
                 entity.rect.y += scroll[1]
 
+        for enemy in enemies:
+            for platform in platforms:
+                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
+                    if enemy.direction == "left":
+                        enemy.direction = "right"
+                    else:
+                        enemy.direction = "left"
+        for collider in hasCollidePhysics:
+            for platform in platforms:
+                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
+                    collider.vel.x = 0
+                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
+                    if collider.vel.y >= 0:
+                        collider.vel.y = 0
+
+        for smartEnemy in smartEnemies:
+            for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
+                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y, TILE_SIZE, TILE_SIZE): #Y collisions
+                    if smartEnemy.direction == "left":
+                        smartEnemy.direction = "right"
+                    else:
+                        smartEnemy.direction = "left"
+
+
         for player in players:
+            for playerKiller in playerKillers:
+                if playerKiller.rect.colliderect(player.rect):
+                    main()
             for platform in platforms:
                 if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, TILE_SIZE, TILE_SIZE): #X Collisions
                     player.vel.x = 0
@@ -105,9 +143,7 @@ class Player(pygame.sprite.Sprite): # player class
         self.image.fill((255, 255, 255)) # makes the player white
         self.rect = self.image.get_rect(topleft=pos) # sets the location of the player to the top left corner of the surface
 
-
         self.vel = pygame.math.Vector2(0, 0)
-
 
         self.speed = 1 # gives speed variable to player
         self.speedMax = 5
@@ -145,7 +181,8 @@ class Player(pygame.sprite.Sprite): # player class
         self.vel.x = (self.vel.x / 1.1)
 
 
-
+        # self.rect.x += self.vel.x
+        # self.rect.y += self.vel.y
 
 
 class Platform(pygame.sprite.Sprite): # similar to player class but for platforms
@@ -155,5 +192,54 @@ class Platform(pygame.sprite.Sprite): # similar to player class but for platform
         self.image.fill((255, 0, 0)) # red
         self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups) # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image.fill((255, 69, 0))
+        self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
+
+        self.speed = 1
+        self.vel = pygame.math.Vector2(0, 0)
+        self.direction = "left"
+
+    def update(self):
+        self.vel += GRAVITY
+        if(self.direction == "left"):
+            self.vel.x = -3
+        else:
+            self.vel.x = 3
+
+        self.rect.x += self.vel.x
+        self.rect.y += self.vel.y
+
+class SmartEnemy(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups) # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image.fill((0, 200, 0))
+        self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
+
+        self.speed = 1
+        self.vel = pygame.math.Vector2(0, 0)
+        self.direction = "left"
+
+
+    def update(self):
+
+        if(self.direction == "left"):
+            self.vel.x = -3
+        else:
+            self.vel.x = 3
+
+        self.rect.x += self.vel.x
+        self.rect.y += self.vel.y
+
+class SmartEnemyTurnTrigger(pygame.sprite.Sprite): #These allow the level builder to place triggers to turn around the smart enemies wherever they want
+    def __init__(self, pos, *groups):
+        super().__init__(*groups) # initializes groups
+        self.image = pygame.Surface((32, 32), pygame.SRCALPHA) #SRCALPHA allows for the tile to be transparent
+        self.image.fill((0, 0, 0, 0)) #The last zero is the transparency
+        self.rect = self.image.get_rect(topleft=pos) # coords assigned to top left
 
 main()
