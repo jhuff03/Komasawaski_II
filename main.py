@@ -49,24 +49,28 @@ def main(): # main game
     players = pygame.sprite.Group() # creates players group which can be tracked
     platforms = pygame.sprite.Group() # creates platforms group which can be tracked
 
+
+
     # build the level
     for row in range(0, len(level)): # traverse 2d array, put platforms at P and spawns the player at S
         for col in range(0, len(level[0])):
             if level[row][col] == "S":
-                Player((col * TILE_SIZE, row * TILE_SIZE), entities, players)
+                Player((col * TILE_SIZE, row * TILE_SIZE), players)
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
 
     running = True
-
     while running: # game loop
         clock.tick(100)
-        print("FPS:", int(clock.get_fps()))
+        #print("FPS:", int(clock.get_fps()))
 
         screen.fill(background_colour) # fills background color every frame
 
         entities.draw(screen) # draws every entity every frame
         entities.update() # updates every entity every frame
+
+        players.draw(screen)  # draws the player every frame
+        players.update()  # updates the player every frame
 
         pygame.display.update() # updates the screen every frame
 
@@ -74,7 +78,11 @@ def main(): # main game
             if event.type == pygame.QUIT:
                 running = False
 
-
+        for player in players:
+            scroll = [-int(player.vel.x), -int(player.vel.y)]
+            for entity in entities:
+                entity.rect.x += scroll[0]
+                entity.rect.y += scroll[1]
 
         for player in players:
             for platform in platforms:
@@ -88,13 +96,6 @@ def main(): # main game
                     if player.vel.y < 0:
                         player.vel.y = 0
                         player.onGround = False
-
-
-
-
-
-
-
 
 
 class Player(pygame.sprite.Sprite): # player class
@@ -127,7 +128,6 @@ class Player(pygame.sprite.Sprite): # player class
         else:
             self.speedMax = 5
 
-
         if keys[pygame.K_SPACE] and self.onGround and self.speedMax == 5:
             self.vel.y -= self.jumpStrength
             self.onGround = False
@@ -141,14 +141,9 @@ class Player(pygame.sprite.Sprite): # player class
         if (self.vel.y > self.speedMax):
             self.vel.y = self.speedMax
 
-        # if (self.vel.y < -self.speedMax):
-        #     self.vel.y = -self.speedMax
-
         # FRICTION:
         self.vel.x = (self.vel.x / 1.1)
 
-        self.rect.x += int(self.vel.x)
-        self.rect.y += int(self.vel.y)
 
 
 
