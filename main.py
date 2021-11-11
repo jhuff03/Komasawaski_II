@@ -14,7 +14,7 @@ GRAVITY = pygame.math.Vector2(0, 0.3)
 coinCount = 0
 
 def main():  # main game
-
+    bulletCooldown = 80
 
     # list represents level
     level = [
@@ -41,7 +41,7 @@ def main():  # main game
         "P              PPPPP                       P",
         "P                                          P",
         "P                                          P",
-        "P                        E                 P",
+        "P                                          P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
@@ -56,6 +56,7 @@ def main():  # main game
     smartEnemyTurnTriggers = pygame.sprite.Group()
     playerKillers = pygame.sprite.Group()
     coins = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -92,6 +93,9 @@ def main():  # main game
             if event.type == pygame.QUIT:
                 sys.exit()
 
+        bulletCooldown -= 1
+
+
         for player in players:
             scroll = [-int(player.vel.x), -int(player.vel.y)]
             for entity in entities:
@@ -106,24 +110,26 @@ def main():  # main game
                         enemy.direction = "right"
                     else:
                         enemy.direction = "left"
+
         for collider in hasCollidePhysics:
             for platform in platforms:
-                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE,
-                                             TILE_SIZE):  # X Collisions
+                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE, TILE_SIZE):  # X Collisions
                     collider.vel.x = 0
-                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE,
-                                             TILE_SIZE):  # Y collisions
+                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
                     if collider.vel.y >= 0:
                         collider.vel.y = 0
 
         for smartEnemy in smartEnemies:
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
-                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y,
-                                                          TILE_SIZE, TILE_SIZE):  # Y collisions
+                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
                     if smartEnemy.direction == "left":
                         smartEnemy.direction = "right"
                     else:
                         smartEnemy.direction = "left"
+
+        for bullet in bullets:
+            if level_width * 5 < bullet.rect.x < 0 - level_width * 5:
+                bullet.kill()
 
         global coinCount
         for player in players:
@@ -135,16 +141,22 @@ def main():  # main game
 
         for player in players:
             for playerKiller in playerKillers:
-                if playerKiller.rect.colliderect(
-                        player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
+                if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
                     main()
 
+            for enemy in enemies:
+                if enemy.rect.y == player.rect.y:
+                    if(bulletCooldown <= 0):
+                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, entities, bullets, playerKillers)
+                        bulletCooldown = 80
+
             for platform in platforms:
-                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, player.image.get_width(),
-                                             player.image.get_height()):  # X Collisions
+                for bullet in bullets:
+                    if bullet.rect.colliderect(platform.rect):
+                        bullet.kill()
+                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, player.image.get_width(), player.image.get_height()):  # X Collisions
                     player.vel.x = 0
-                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y,
-                                             player.image.get_width(), player.image.get_height()):  # Y collisions
+                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, player.image.get_width(), player.image.get_height()):  # Y collisions
                     if player.vel.y >= 0:
                         player.vel.y = 0
                         player.onGround = True
@@ -159,8 +171,7 @@ class Player(pygame.sprite.Sprite):  # player class
         super().__init__(*groups)  # initializes every single group by adding player to each group
         self.image = pygame.Surface((16, 32))  # creates player as a 16x32 surface
         self.image.fill((255, 255, 255))  # makes the player white
-        self.rect = self.image.get_rect(
-            topleft=pos)  # sets the location of the player to the top left corner of the surface
+        self.rect = self.image.get_rect(topleft=pos)  # sets the location of the player to the top left corner of the surface
 
         self.vel = pygame.math.Vector2(0, 0)
 
@@ -222,6 +233,9 @@ class Enemy(pygame.sprite.Sprite):
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"
 
+        if (self.direction == "right"):
+            self.rect.x += 32
+
     def update(self):
         self.vel += GRAVITY
         if (self.direction == "left"):
@@ -269,6 +283,31 @@ class Coin(pygame.sprite.Sprite):
         self.image = pygame.Surface((8, 8))  # coins are 8x8 and only to be placed every 32 pixels.
         self.image.fill((255, 255, 0))  # yellow
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, pos, direction, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((8, 8))
+        self.image.fill((255, 255, 0))  # yellow
+        self.rect = self.image.get_rect(center=pos)  # coords assigned to center
+
+        self.speed = 10
+        self.vel = pygame.math.Vector2(0, 0)
+
+        if(direction == "right"):
+            self.vel.x = self.speed
+        if (direction == "left"):
+            self.vel.x = -self.speed
+
+        if (direction == "up"):
+            self.vel.y = -self.speed
+        if (direction == "down"):
+            self.vel.x = self.speed
+
+    def update(self):
+
+        self.rect.x += self.vel.x
+        self.rect.y += self.vel.y
 
 
 main()
