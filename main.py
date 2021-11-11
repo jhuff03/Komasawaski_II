@@ -288,7 +288,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, direction, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((8, 8))
-        self.image.fill((255, 255, 0))  # yellow
+        self.image.fill((200, 200, 200))  # gray
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
 
         self.speed = 10
@@ -305,7 +305,6 @@ class Bullet(pygame.sprite.Sprite):
             self.vel.x = self.speed
 
     def update(self):
-
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
 
