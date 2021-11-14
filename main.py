@@ -27,8 +27,8 @@ def main():  # main game
         "P                                          P",
         "P   |    R   |                             P",
         "P    PPPPPPPP                              P",
-        "P                     S                    P",
-        "P                          PPPPPPP         P",
+        "P                                          P",
+        "P                   S      PPPPPPP         P",
         "P                 PPPPPP                   P",
         "P           ***                            P",
         "P         PPPPPPP                          P",
@@ -73,6 +73,15 @@ def main():  # main game
                 SmartEnemyTurnTrigger((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemyTurnTriggers)
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
+
+    for player in players:
+        scroll = [(width / 2) -player.rect.x, (height / 2) - player.rect.y]
+        for entity in entities:
+            entity.rect.x += scroll[0]
+            entity.rect.y += scroll[1]
+        player.rect.x = width / 2
+        player.rect.y = height / 2
+
 
     running = True
     while running:  # game loop
