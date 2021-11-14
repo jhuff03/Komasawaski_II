@@ -200,7 +200,7 @@ class Player(pygame.sprite.Sprite):  # player class
         if keys[pygame.K_d]:
             self.vel.x += self.speed
 
-        if keys[pygame.K_LCTRL]:
+        if keys[pygame.K_LSHIFT]:
             self.speedMax = 7
         else:
             self.speedMax = 5
