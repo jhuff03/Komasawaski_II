@@ -82,6 +82,8 @@ def main():  # main game
         player.rect.x = width / 2
         player.rect.y = height / 2
 
+    def killPlayer():
+        main()
 
     running = True
     while running:  # game loop
@@ -151,7 +153,7 @@ def main():  # main game
         for player in players:
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
-                    main()
+                    killPlayer()
 
             for enemy in enemies:
                 if enemy.rect.y == player.rect.y:
