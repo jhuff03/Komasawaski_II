@@ -207,7 +207,7 @@ class Player(pygame.sprite.Sprite):  # player class
         self.speed = 1  # gives speed variable to player
         self.speedMax = 5
         self.onGround = False
-        self.jumpStrength = 10
+        self.jumpStrength = 10.2
 
     def update(self):  # keyboard inputs for player
         self.vel += GRAVITY
