@@ -166,7 +166,7 @@ def main():  # main game
                     coin.kill()
                     # print(coinCount)
             if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
-                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, entities, bullets, playerBullets)
+                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], entities, bullets, playerBullets)
                 player.shotCooldown = 20
 
             for playerKiller in playerKillers:
@@ -176,7 +176,7 @@ def main():  # main game
             for enemy in enemies:  # Handle when enemies fire
                 if enemy.rect.y == player.rect.y:
                     if bulletCooldown <= 0:
-                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
                         bulletCooldown = 80
 
             for platform in platforms:  # Destroy bullets on contact with platforms
@@ -328,7 +328,7 @@ class Coin(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, *groups):
+    def __init__(self, pos, direction, straight, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((8, 8))
         self.image.fill((200, 200, 200))  # gray
@@ -346,6 +346,9 @@ class Bullet(pygame.sprite.Sprite):
             self.vel.y = -self.speed
         if direction == "down":
             self.vel.x = self.speed
+
+        if not straight:
+            self.vel.y -= self.speed
 
     def update(self):
         self.rect.x += self.vel.x
