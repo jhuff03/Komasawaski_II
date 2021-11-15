@@ -15,6 +15,7 @@ coinCount = 0
 
 
 def main():  # main game
+    global coinCount
     bulletCooldown = 80
 
     # list represents level
@@ -58,6 +59,8 @@ def main():  # main game
     playerKillers = pygame.sprite.Group()
     coins = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
+    playerKillables = pygame.sprite.Group()  # list of all things that can have their health lowered by the player firing bullets at them
+    playerBullets = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -67,17 +70,16 @@ def main():  # main game
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
             if level[row][col] == "E":
-                Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, hasCollidePhysics, playerKillers)
+                Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, hasCollidePhysics, playerKillers, playerKillables)
             if level[row][col] == "R":
-                SmartEnemy((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, playerKillers)
+                SmartEnemy((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, playerKillers, playerKillables)
             if level[row][col] == "|":
                 SmartEnemyTurnTrigger((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemyTurnTriggers)
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
 
     for player in players:
-        scroll = [(width / 2) - player.rect.x,
-                  (height / 2) - player.rect.y]  # set the initial offset of the level before the game loop
+        scroll = [(width / 2) - player.rect.x, (height / 2) - player.rect.y]  # set the initial offset of the level before the game loop
         for entity in entities:
             entity.rect.x += scroll[0]  # move everything to be aligned with the offset
             entity.rect.y += scroll[1]
@@ -120,8 +122,7 @@ def main():  # main game
 
         for enemy in enemies:  # handle enemy / platform collisions for enemy turnaround
             for platform in platforms:
-                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, TILE_SIZE,
-                                             TILE_SIZE):  # X Collisions
+                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, TILE_SIZE, TILE_SIZE):  # X Collisions
                     if enemy.direction == "left":
                         enemy.direction = "right"
                     else:
@@ -129,18 +130,15 @@ def main():  # main game
 
         for collider in hasCollidePhysics:  # handle non-player collisions. Any entity in the hasCollidePhysics group will collide with floors and walls
             for platform in platforms:
-                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE,
-                                             TILE_SIZE):  # X Collisions
+                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE, TILE_SIZE):  # X Collisions
                     collider.vel.x = 0
-                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE,
-                                             TILE_SIZE):  # Y collisions
+                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
                     if collider.vel.y >= 0:
                         collider.vel.y = 0
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
-                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y,
-                                                          TILE_SIZE, TILE_SIZE):  # Y collisions
+                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
                     if smartEnemy.direction == "left":
                         smartEnemy.direction = "right"
                     else:
@@ -150,25 +148,35 @@ def main():  # main game
             if level_width * 5 < bullet.rect.x < 0 - level_width * 5:
                 bullet.kill()
 
-        global coinCount
-        for player in players:  # keep track of coins
+        for playerBullet in playerBullets:
+            for playerKillable in playerKillables:
+                if playerBullet.rect.colliderect(playerKillable.rect):  # Everything that can be killed by the player MUST have a health variable even if it is just 1
+                    playerKillable.health -= 1
+                    playerBullet.kill()
+                if playerKillable.health <= 0:
+                    playerKillable.kill()
+
+        """
+        All of the player's interactions should be handled below
+        """
+        for player in players:
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
                     coinCount += 1
                     coin.kill()
                     # print(coinCount)
+            if pygame.key.get_pressed()[pygame.K_e] and player.shotCooldown <= 0:
+                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, entities, bullets, playerBullets)
+                player.shotCooldown = 20
 
-        for player in players:
             for playerKiller in playerKillers:
-                if playerKiller.rect.colliderect(
-                        player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
+                if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
                     killPlayer()
 
             for enemy in enemies:  # Handle when enemies fire
                 if enemy.rect.y == player.rect.y:
                     if bulletCooldown <= 0:
-                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, entities, bullets,
-                               playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
                         bulletCooldown = 80
 
             for platform in platforms:  # Destroy bullets on contact with platforms
@@ -180,11 +188,9 @@ def main():  # main game
                 platform (A platform is a group that keeps track of anything that should have collisions, the player's
                 movement his halted in that direction.
                 """
-                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, player.image.get_width(),
-                                             player.image.get_height()):  # X Collisions
+                if platform.rect.colliderect(player.rect.x + 2 * player.vel.x, player.rect.y, player.image.get_width(), player.image.get_height()):  # X Collisions
                     player.vel.x = 0
-                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y,
-                                             player.image.get_width(), player.image.get_height()):  # Y collisions
+                if platform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, player.image.get_width(), player.image.get_height()):  # Y collisions
                     if player.vel.y >= 0:
                         player.vel.y = 0
                         player.onGround = True
@@ -203,13 +209,17 @@ class Player(pygame.sprite.Sprite):  # player class
             topleft=pos)  # sets the location of the player to the top left corner of the surface
 
         self.vel = pygame.math.Vector2(0, 0)
+        self.onGround = False
+        self.direction = "left"
+        self.shotCooldown = 20
 
         self.speed = 1  # gives speed variable to player
         self.speedMax = 5
-        self.onGround = False
         self.jumpStrength = 10.2
 
     def update(self):  # keyboard inputs for player
+        self.shotCooldown -= 1
+
         self.vel += GRAVITY
 
         keys = pygame.key.get_pressed()  # pygame keyboard handler
@@ -236,6 +246,11 @@ class Player(pygame.sprite.Sprite):  # player class
         if self.vel.y > self.speedMax:
             self.vel.y = self.speedMax
 
+        if self.vel.x > 0:
+            self.direction = "right"
+        if self.vel.x < 0:
+            self.direction = "left"
+
         # FRICTION:
         self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
 
@@ -254,6 +269,8 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 32))
         self.image.fill((255, 69, 0))
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+        self.health = 1
 
         self.speed = 1
         self.vel = pygame.math.Vector2(0, 0)
@@ -276,6 +293,8 @@ class SmartEnemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 32))
         self.image.fill((0, 200, 0))
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+        self.health = 5
 
         self.speed = 2
         self.vel = pygame.math.Vector2(0, 0)
