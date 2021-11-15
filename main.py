@@ -213,6 +213,9 @@ class Player(pygame.sprite.Sprite):  # player class
         self.direction = "left"
         self.shotCooldown = 20
 
+        self.animationCooldown = 15
+        self.animationState = 0
+
         self.speed = 1  # gives speed variable to player
         self.speedMax = 5
         self.jumpStrength = 10.2
@@ -253,6 +256,44 @@ class Player(pygame.sprite.Sprite):  # player class
 
         # FRICTION:
         self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
+
+        self.animate()
+
+    def animate(self):
+        if int(self.vel.x) == 0:
+            self.image = pygame.image.load('assets/player.png')
+        elif self.direction == "right":
+            self.animationCooldown -= 1
+
+            if self.animationCooldown <= 0:
+                self.animationState += 1
+                self.animationCooldown = 15
+
+            if self.animationState == 0:
+                self.image = pygame.image.load('assets/player_run_1.png')
+            if self.animationState == 1:
+                self.image = pygame.image.load('assets/player_run_2.png')
+            if self.animationState == 2:
+                self.image = pygame.image.load('assets/player_run_3.png')
+            if self.animationState == 3:
+                self.image = pygame.image.load('assets/player_run_2.png')
+                self.animationState = 0
+        elif self.direction == "left":
+            self.animationCooldown -= 1
+
+            if self.animationCooldown <= 0:
+                self.animationState += 1
+                self.animationCooldown = 15
+
+            if self.animationState == 0:
+                self.image = pygame.transform.flip(pygame.image.load('assets/player_run_1.png'), True, False)
+            if self.animationState == 1:
+                self.image = pygame.transform.flip(pygame.image.load('assets/player_run_2.png'), True, False)
+            if self.animationState == 2:
+                self.image = pygame.transform.flip(pygame.image.load('assets/player_run_3.png'), True, False)
+            if self.animationState == 3:
+                self.image = pygame.transform.flip(pygame.image.load('assets/player_run_2.png'), True, False)
+                self.animationState = 0
 
 
 class Platform(pygame.sprite.Sprite):  # similar to player class but for platforms
