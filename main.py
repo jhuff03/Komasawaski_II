@@ -165,7 +165,7 @@ def main():  # main game
                     coinCount += 1
                     coin.kill()
                     # print(coinCount)
-            if pygame.key.get_pressed()[pygame.K_e] and player.shotCooldown <= 0:
+            if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
                 Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, entities, bullets, playerBullets)
                 player.shotCooldown = 20
 
