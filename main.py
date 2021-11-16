@@ -434,6 +434,3 @@ class MiniBoss(pygame.sprite.Sprite):
 
 
 main()  # run the main game loop
-
-# miniboss 64*64 -- shooting, jumping
-#
