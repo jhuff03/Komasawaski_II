@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-background_colour = (0, 0, 100)  # rgb colors - this is dark blue
+background_colour = (0, 0, 0)  # rgb colors - this is dark blue
 (width, height) = (1280, 720)  # resolution of game window
 screen = pygame.display.set_mode((width, height))  # creates screen
 screen.fill(background_colour)  # puts color onto screen
@@ -308,7 +308,7 @@ class Platform(pygame.sprite.Sprite):  # similar to player class but for platfor
     def __init__(self, pos, *groups):  # constructs platforms
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))  # platforms are 32x32 and only to be placed every 32 pixels.
-        self.image.fill((255, 0, 0))  # red
+        self.image = pygame.image.load('assets/tile.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
 
