@@ -313,16 +313,16 @@ class Enemy(pygame.sprite.Sprite):
 
         self.health = 1
 
-        self.speed = 1
+        self.speed = 3
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
 
     def update(self):
         self.vel += GRAVITY
         if self.direction == "left":
-            self.vel.x = -3
+            self.vel.x = -self.speed
         else:
-            self.vel.x = 3
+            self.vel.x = self.speed
 
         self.rect.x += self.vel.x  # apply velocity
         self.rect.y += self.vel.y
@@ -396,4 +396,37 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.vel.y
 
 
+class MiniBoss(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):  # constructs miniboss
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((64, 64))  # boss is 64x64
+        self.image.fill((255, 0, 0))  # red - placeholder texture
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+        self.health = 15
+        self.jumpStrength = 15
+        self.jumpCooldown = 200
+        self.speed = 2
+        self.vel = pygame.math.Vector2(0, 0)
+        self.direction = "left"  # set default direction
+
+    def update(self):
+        self.jumpCooldown -= 1
+        self.vel += GRAVITY
+        if self.jumpCooldown <= 0:
+            self.vel.y -= self.jumpStrength
+            self.jumpCooldown = 200
+        if self.direction == "left":
+            self.vel.x = -self.speed
+        else:
+            self.vel.x = self.speed
+
+        self.rect.x += self.vel.x  # apply velocity
+        self.rect.y += self.vel.y
+
+
+
 main()  # run the main game loop
+
+# miniboss 64*64 -- shooting, jumping
+#
