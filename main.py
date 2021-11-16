@@ -79,7 +79,7 @@ def main():  # main game
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
             if level[row][col] == "J":
-                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses)
+                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables)
 
     for player in players:
         scroll = [(width / 2) - player.rect.x, (height / 2) - player.rect.y]  # set the initial offset of the level before the game loop
