@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-background_colour = (0, 0, 0)  # rgb colors - this is dark blue
+background_colour = (50, 50, 50)  # rgb colors - this is dark blue
 (width, height) = (1280, 720)  # resolution of game window
 screen = pygame.display.set_mode((width, height))  # creates screen
 screen.fill(background_colour)  # puts color onto screen
