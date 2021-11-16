@@ -41,7 +41,7 @@ def main():  # main game
         "P                                          P",
         "P               ***                        P",
         "P              PPPPP                       P",
-        "P                                          P",
+        "P                                 J        P",
         "P                                          P",
         "P                                          P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
@@ -61,6 +61,7 @@ def main():  # main game
     bullets = pygame.sprite.Group()
     playerKillables = pygame.sprite.Group()  # list of all things that can have their health lowered by the player firing bullets at them
     playerBullets = pygame.sprite.Group()
+    miniBosses = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -77,6 +78,8 @@ def main():  # main game
                 SmartEnemyTurnTrigger((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemyTurnTriggers)
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
+            if level[row][col] == "J":
+                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses)
 
     for player in players:
         scroll = [(width / 2) - player.rect.x, (height / 2) - player.rect.y]  # set the initial offset of the level before the game loop
@@ -122,18 +125,23 @@ def main():  # main game
 
         for enemy in enemies:  # handle enemy / platform collisions for enemy turnaround
             for platform in platforms:
-                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, TILE_SIZE, TILE_SIZE):  # X Collisions
+                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, enemy.rect.width, enemy.rect.height):  # X Collisions
                     if enemy.direction == "left":
                         enemy.direction = "right"
+                        enemy.vel.x = 0
                     else:
                         enemy.direction = "left"
+                        enemy.vel.x = 0
 
         for collider in hasCollidePhysics:  # handle non-player collisions. Any entity in the hasCollidePhysics group will collide with floors and walls
             for platform in platforms:
-                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, TILE_SIZE, TILE_SIZE):  # X Collisions
+                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, collider.rect.width, collider.rect.height):  # X Collisions
                     collider.vel.x = 0
-                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
+                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, collider.rect.width, collider.rect.height):  # Y collisions
                     if collider.vel.y >= 0:
+                        collider.vel.y = 0
+
+                    if collider.vel.y < 0:
                         collider.vel.y = 0
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
