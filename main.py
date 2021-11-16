@@ -372,7 +372,7 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((8, 8))  # coins are 8x8 and only to be placed every 32 pixels.
-        self.image.fill((255, 255, 0))  # yellow
+        self.image = pygame.image.load('assets/coin.png')
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
 
 
