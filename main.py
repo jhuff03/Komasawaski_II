@@ -20,31 +20,40 @@ def main():  # main game
 
     # list represents level
     level = [
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                                          P",
-        "P           |          R                 | P",
-        "P                                          P",
-        "P                                          P",
-        "P                                          P",
-        "P                                          P",
-        "P   |    R   |                             P",
-        "P    PPPPPPPP                              P",
-        "P                                          P",
-        "P                   S      PPPPPPP         P",
-        "P                 PPPPPP                   P",
-        "P           ***                            P",
-        "P         PPPPPPP                          P",
-        "P                          E               P",
-        "P                         PP               P",
-        "P                     PPPPPP               P",
-        "P                                          P",
-        "P                                          P",
-        "P               ***                        P",
-        "P              PPPPP                       P",
-        "P                                 J        P",
-        "P                                          P",
-        "P                                          P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "      =    =   =                             ",
+        "]     =    =   =                             ",
+        "]     =    =|  =       R                 |   ",
+        "]     =    =   =                             ",
+        "]     =    =   =                             ",
+        "]     =    =   =                             ",
+        "]     =    =   =                             ",
+        "]   | =  R = | =                             ",
+        "]    PPPPPPPP  =                             ",
+        "]          =   =                             ",
+        "]          =   =    S                        ",
+        "]          =   =  PPPPPP                     ",
+        "]          =***=  =    =                     ",
+        "]         PPPPPPP =    =                     ",
+        "]                 =    =   E                 ",
+        "]                 =    =  PP                 ",
+        "]                 =   PPPPPP                 ",
+        "]                 =    =  =                  ",
+        "]                 =    =  =                  ",
+        "]                 =    =  =             PPPPP",
+        "]              PPPPP   =  =              = = ",
+        "]               = =    =  =              = = ",
+        "]               = =    =  =              = = ",
+        "]               = =    =  =              PPP ",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
     level_height = len(level) * TILE_SIZE
@@ -70,6 +79,8 @@ def main():  # main game
                 Player((col * TILE_SIZE, row * TILE_SIZE), players)
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
+            if level[row][col] == "]":
+                Barrier((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
             if level[row][col] == "E":
                 Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, hasCollidePhysics, playerKillers, playerKillables)
             if level[row][col] == "R":
@@ -80,8 +91,11 @@ def main():  # main game
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
             if level[row][col] == "J":
                 MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables)
+            if level[row][col] == "=":
+                Support((col * TILE_SIZE, row * TILE_SIZE), entities)
 
     for player in players:
+        totalYScroll = player.rect.y
         scroll = [(width / 2) - player.rect.x, (height / 2) - player.rect.y]  # set the initial offset of the level before the game loop
         for entity in entities:
             entity.rect.x += scroll[0]  # move everything to be aligned with the offset
@@ -119,6 +133,7 @@ def main():  # main game
         """
         for player in players:  # access the player's "velocity" even though the player never really moves
             scroll = [-int(player.vel.x), -int(player.vel.y)]
+            totalYScroll -= scroll[1]
             for entity in entities:
                 entity.rect.x += scroll[0]  # move everything other than the player by that velocity
                 entity.rect.y += scroll[1]
@@ -168,6 +183,9 @@ def main():  # main game
         All of the player's interactions should be handled below
         """
         for player in players:
+            if totalYScroll > level_height:
+                killPlayer()
+
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
                     coinCount += 1
@@ -265,6 +283,7 @@ class Player(pygame.sprite.Sprite):  # player class
         # FRICTION:
         self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
 
+
         self.animate()
 
     def animate(self):
@@ -309,6 +328,21 @@ class Platform(pygame.sprite.Sprite):  # similar to player class but for platfor
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))  # platforms are 32x32 and only to be placed every 32 pixels.
         self.image = pygame.image.load('assets/tile.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+
+class Support(pygame.sprite.Sprite):  # see platform class
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))  # supports are 32x32 and only to be placed every 32 pixels.
+        self.image = pygame.image.load('assets/support.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+class Barrier(pygame.sprite.Sprite):  # Invisible barriers to prevent the player from going out of bounds
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32), pygame.SRCALPHA)  # SRCALPHA allows for the tile to be transparent
+        self.image.fill((0, 0, 0, 0))  # The last zero is the transparency
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
 
