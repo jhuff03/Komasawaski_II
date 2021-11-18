@@ -20,40 +20,40 @@ def main():  # main game
 
     # list represents level
     level = [
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "      =    =   =                             ",
-        "]     =    =   =                             ",
-        "]     =    =|  =       R                 |   ",
-        "]     =    =   =                             ",
-        "]     =    =   =                             ",
-        "]     =    =   =                             ",
-        "]     =    =   =                             ",
-        "]   | =  R = | =                             ",
-        "]    PPPPPPPP  =                             ",
-        "]          =   =                             ",
-        "]          =   =    S                        ",
-        "]          =   =  PPPPPP                     ",
-        "]          =***=  =    =                     ",
-        "]         PPPPPPP =    =                     ",
-        "]                 =    =   E                 ",
-        "]                 =    =  PP                 ",
-        "]                 =   PPPPPP                 ",
-        "]                 =    =  =                  ",
-        "]                 =    =  =                  ",
-        "]                 =    =  =             PPPPP",
-        "]              PPPPP   =  =              = = ",
-        "]               = =    =  =              = = ",
-        "]               = =    =  =              = = ",
-        "]               = =    =  =              PPP ",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        "      =    =   =                                =                                                       ",
+        "      =    =   =                                =                                                       ",
+        "      =    =   =                                =       =                                               ",
+        "      =    =   =                                =       =                                               ",
+        "      =    =   =                                =       =                                               ",
+        "      =    =   =                                =       =               = =                             ",
+        "      =    =   =                                =       =               = =                             ",
+        "      =    =   =                                =       =               = =                             ",
+        "      =    =   =                                =       =               = =                             ",
+        "      =    =   =                                =       =               = =                             ",
+        "]     =    =   =                                =       =               = =                             ",
+        "]     =    =|  =       R                 |      =       =               = =                             ",
+        "]     =    =   =                                =       =               = =                             ",
+        "]     =    =   =                                =       =               = =                             ",
+        "]     =    =   =                                =       =               = =                             ",
+        "]     =    =   =                                =       =               = =                             ",
+        "]   | =  R = | =                                =       =               = =                             ",
+        "]    PPPPPPPP  =                                =       =               = =                             ",
+        "]          =   =                                =       =               = =                             ",
+        "]          =   =    S                           =       =               = =                             ",
+        "]          =   =  PPPPPP                        =       =               = =                             ",
+        "]          =***=  =    =                        =       =               = =                             ",
+        "]         PPPPPPP =    =                        =       =               = =                             ",
+        "]                 =    =   E                    =       =               = =                             ",
+        "]                 =    =  PP                    =       =               = =                             ",
+        "]                 =   PPPPPP                    =       =               = =                             ",
+        "]                 =    =  =                     =       =               = =                             ",
+        "]                 =    =  =                     =       =              PPPPP                            ",
+        "]                 =    =  =             PPPPP   =       =               = =          PPP                ",
+        "]              PPPPP   =  =              = =    =       =               = =           =                 ",
+        "]               = =    =  =              = =    =       =               = =           =                 ",
+        "]               = =    =  =              = =    =     * P *          PPPPPPPPP        =                 ",
+        "]               = =    =  =              PPP    =     P P P                           =                 ",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPPP                    PPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
     level_height = len(level) * TILE_SIZE
@@ -90,7 +90,7 @@ def main():  # main game
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
             if level[row][col] == "J":
-                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables)
+                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
 
