@@ -192,7 +192,7 @@ def main():  # main game
                     coin.kill()
                     # print(coinCount)
             if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
-                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], entities, bullets, playerBullets)
+                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
                 player.shotCooldown = 20
 
             for playerKiller in playerKillers:
@@ -411,7 +411,7 @@ class Coin(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, straight, *groups):
+    def __init__(self, pos, direction, up, down, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((8, 8))
         self.image.fill((200, 200, 200))  # gray
@@ -430,8 +430,11 @@ class Bullet(pygame.sprite.Sprite):
         if direction == "down":
             self.vel.x = self.speed
 
-        if not straight:
+        if not up:
             self.vel.y -= self.speed
+
+        if not down:
+            self.vel.y = self.speed
 
     def update(self):
         self.rect.x += self.vel.x
