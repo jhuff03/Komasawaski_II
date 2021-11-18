@@ -374,7 +374,7 @@ class SmartEnemy(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))
-        self.image.fill((0, 200, 0))
+        self.image = pygame.image.load('assets/ufo.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
         self.health = 5
@@ -386,8 +386,10 @@ class SmartEnemy(pygame.sprite.Sprite):
     def update(self):
 
         if self.direction == "left":
+            self.image = pygame.image.load('assets/ufo.png')
             self.vel.x = -self.speed
         else:
+            self.image = pygame.transform.flip(pygame.image.load('assets/ufo.png'), True, False)
             self.vel.x = self.speed
 
         self.rect.x += self.vel.x
