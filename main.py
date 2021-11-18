@@ -44,7 +44,7 @@ def main():  # main game
         "]          =***=  =    =                        =       =               = =                             ",
         "]         PPPPPPP =    =                        =       =               = =                             ",
         "]                 =    =   E                    =       =               = =                             ",
-        "]                 =    =  PP                    =       =               = =                             ",
+        "]                 =    =  CC                    =       =               = =                             ",
         "]                 =   PPPPPP                    =       =               = =                             ",
         "]                 =    =  =                     =       =               = =                             ",
         "]                 =    =  =                     =       =              PPPPP                            ",
@@ -79,6 +79,8 @@ def main():  # main game
                 Player((col * TILE_SIZE, row * TILE_SIZE), players)
             if level[row][col] == "P":
                 Platform((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
+            if level[row][col] == "C":
+                Crate((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
             if level[row][col] == "]":
                 Barrier((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
             if level[row][col] == "E":
@@ -330,6 +332,12 @@ class Platform(pygame.sprite.Sprite):  # similar to player class but for platfor
         self.image = pygame.image.load('assets/tile.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
+class Crate(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load('assets/crate.png')
+        self.rect = self.image.get_rect(topleft=pos)
 
 class Support(pygame.sprite.Sprite):  # see platform class
     def __init__(self, pos, *groups):
