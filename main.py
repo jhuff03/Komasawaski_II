@@ -229,7 +229,8 @@ def main():  # main game
             for enemy in enemies:  # Handle when enemies fire
                 if enemy.rect.y == player.rect.y:
                     if bulletCooldown <= 0:
-                        Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                        for enemy in enemies:
+                            Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
                         bulletCooldown = 80
 
             for platform in platforms:  # Destroy bullets on contact with platforms
