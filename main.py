@@ -212,6 +212,7 @@ def main():  # main game
                         player.moving = True
                 else:
                     player.frictional = True
+                    player.moving = True
 
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
