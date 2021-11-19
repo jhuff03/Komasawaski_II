@@ -424,7 +424,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, direction, up, down, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((8, 8))
-        self.image.fill((200, 200, 200))  # gray
+        self.image = pygame.image.load('assets/bullet.png')
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
 
         self.speed = 10
