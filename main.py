@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 background_colour = (50, 50, 50)  # rgb colors - this is dark blue
 (width, height) = (1280, 720)  # resolution of game window
@@ -16,7 +17,6 @@ coinCount = 0
 
 def main():  # main game
     global coinCount
-    bulletCooldown = 80
 
     # list represents level
     level = [
@@ -130,8 +130,6 @@ def main():  # main game
             if event.type == pygame.QUIT:
                 sys.exit()
 
-        bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
-
         """
         Below is the scrolling code and technically the movement code of the player. Instead of moving the player around 
         within the level, everything else in the level is moved instead to give the illusion of player movement.
@@ -230,11 +228,10 @@ def main():  # main game
                     killPlayer()
 
             for enemy in enemies:  # Handle when enemies fire
-                if enemy.rect.y == player.rect.y:
-                    if bulletCooldown <= 0:
-                        for enemy in enemies:
-                            Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
-                        bulletCooldown = 80
+                enemy.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
+                if enemy.bulletCooldown <= 0:
+                    Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                    enemy.bulletCooldown = 80
 
             for platform in platforms:  # Destroy bullets on contact with platforms
                 for bullet in bullets:
@@ -395,6 +392,8 @@ class Enemy(pygame.sprite.Sprite):
 
         self.health = 1
 
+        self.bulletCooldown = random.randrange(0, 80)
+
         self.speed = 3
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
@@ -493,6 +492,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.health = 15
         self.jumpStrength = 15
         self.jumpCooldown = 200
+        self.bulletCooldown = random.randrange(70, 90)
         self.speed = 2
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
