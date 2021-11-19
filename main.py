@@ -39,21 +39,21 @@ def main():  # main game
         "]   | =  R = | =                                =       =               = =                                                                                                                   ",
         "]    PPPPPPPP  =                                =       =               = =                                                                                                                   ",
         "]          =   =                                =       =               = =                                                                  PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "]          =   =    S                        |  =  R    =               = =                  |                                            || =               =   =                           P",
-        "]          =   =  PPPPPP                        =       =               = =                                                               || =               =   =                           P",
-        "]          =***=  =    =                        =       =               = =                                                               || =               =   =                           P",
-        "]         PPPPPPP =    =                        =       =               = =                                                               || =               =   =       **                  P",
-        "]                 =    =   E                    =       =               = =                                               PPPPP           || =               =   =    PPPPPPPP               P",
-        "]                 =    =  CC                    =       =               = =                                 *****          = =            || =               =   =      =  =                 P",
-        "]                 =   PPPPPP                    =       =         |     = =           R       |           PPPPPPPPP        = =            || =               =   =      =  =                 P",
-        "]                 =    =  =                     =       =               = =           *                    =     =         = =            || =               =   =      =  =                 P",
-        "]                 =    =  =                     =       =              PPPPP        |*R*|                  =     =         = =            || =              PPPPPPP     =  =                 P",
-        "]                 =    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   = =            || =                          =  =                 P",
-        "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP           || =                        PPPPPPPP               P",
-        "]               = =    =  =              = =    =       =               = =           =                    =     =    =    = =            || =    J                     =  =         *       P",
-        "]               = =    =  =              = =    =     * P *          PPPPPPPPP        =                   PPPPPPPPP   =    = =            || =           *              =  =        *C       P",
-        "]               = =    =  =              PPP    =     P P P                        C  =        E           =     =    =    = =         E  || =          CCC             =  =       CCCC      P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP    PP               PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        "]          =   =    S                        |  =  R    =               = =                  |                                             | =               =   =                           P",
+        "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =                           P",
+        "]          =***=  =    =                        =       =               = =                                                                | =               =   =                           P",
+        "]         PPPPPPP =    =                        =       =               = =                                                                | =               =   =       **                  P",
+        "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =    PPPPPPPP               P",
+        "]                 =    =  CC                    =       =               = =                                 *****          = =             | =               =   =      =  =                 P",
+        "]                 =   PPPPPP                    =       =         |     = =           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
+        "]                 =    =  =                     =       =               = =           *                    =     =         = =             | =               =   =      =  =                 P",
+        "]                 =    =  =                     =       =              PPPPP        |*R*|                  =     =         = =             | =              PPPPPPP     =  =      J          P",
+        "]                 =    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   = =             | =                          =  =                 P",
+        "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
+        "]               = =    =  =              = =    =       =               = =           =                    =     =    =    = =             | =                          =  =         *       P",
+        "]               = =    =  =              = =    =     * P *          PPPPPPPPP        =                   PPPPPPPPP   =    = =             | =           *              =  =        *C       P",
+        "]               = =    =  =              PPP    =     P P P                        C  =        E           =     =    =    = =         E   | =          CCC             =  =       CCCC      P",
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
     level_height = len(level) * TILE_SIZE
@@ -71,6 +71,7 @@ def main():  # main game
     playerKillables = pygame.sprite.Group()  # list of all things that can have their health lowered by the player firing bullets at them
     playerBullets = pygame.sprite.Group()
     miniBosses = pygame.sprite.Group()
+    smartPlatforms = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -95,6 +96,8 @@ def main():  # main game
                 MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
+            if level[row][col] == "-":
+                MovingPlatform((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, platforms, smartPlatforms)
 
     for player in players:
         totalYScroll = player.rect.y
@@ -161,12 +164,23 @@ def main():  # main game
                     if collider.vel.y < 0:
                         collider.vel.y = 0
 
+        for miniBoss in miniBosses:
+            for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
+                if smartEnemyTurnTrigger.rect.colliderect(miniBoss.rect.x + 2 * miniBoss.vel.x, miniBoss.rect.y, miniBoss.rect.width, miniBoss.rect.height):  # X Collisions
+                    miniBoss.vel.x = 0
+                    if miniBoss.direction == "left":
+                        miniBoss.direction = "right"
+                    else:
+                        miniBoss.direction = "left"
+
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
-                if smartEnemyTurnTrigger.rect.colliderect(smartEnemy.rect.x, smartEnemy.rect.y + 1.3 * smartEnemy.vel.y, TILE_SIZE, TILE_SIZE):  # Y collisions
+                if smartEnemy.rect.colliderect(smartEnemyTurnTrigger.rect):  # Y collisions
                     if smartEnemy.direction == "left":
+                        smartEnemy.vel.x *= -1
                         smartEnemy.direction = "right"
                     else:
+                        smartEnemy.vel.x *= -1
                         smartEnemy.direction = "left"
 
         for bullet in bullets:  # bullet overflow protection
@@ -187,6 +201,17 @@ def main():  # main game
         for player in players:
             if totalYScroll > level_height:
                 killPlayer()
+
+            for smartPlatform in smartPlatforms:
+                if smartPlatform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, player.image.get_width(), player.image.get_height()):
+                    player.frictional = False
+                    player.vel.x = smartPlatform.vel.x * 1.3
+                    if not pygame.key.get_pressed()[pygame.K_a] and not pygame.key.get_pressed()[pygame.K_d]:
+                        player.moving = False
+                    else:
+                        player.moving = True
+                else:
+                    player.frictional = True
 
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
@@ -236,10 +261,12 @@ class Player(pygame.sprite.Sprite):  # player class
         self.rect = self.image.get_rect(
             topleft=pos)  # sets the location of the player to the top left corner of the surface
 
+        self.frictional = True
         self.vel = pygame.math.Vector2(0, 0)
         self.onGround = False
         self.direction = "left"
         self.shotCooldown = 20
+        self.moving = True
 
         self.animationCooldown = 15
         self.animationState = 0
@@ -283,13 +310,14 @@ class Player(pygame.sprite.Sprite):  # player class
             self.direction = "left"
 
         # FRICTION:
-        self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
+        if self.frictional:
+            self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
 
 
         self.animate()
 
     def animate(self):
-        if int(self.vel.x) == 0:
+        if int(self.vel.x) == 0 or not self.moving:
             self.image = pygame.image.load('assets/player.png')
         elif self.direction == "right":
             self.animationCooldown -= 1
@@ -471,13 +499,33 @@ class MiniBoss(pygame.sprite.Sprite):
         if self.jumpCooldown <= 0:
             self.vel.y -= self.jumpStrength
             self.jumpCooldown = 200
+
         if self.direction == "left":
             self.vel.x = -self.speed
         else:
             self.vel.x = self.speed
 
-        self.rect.x += self.vel.x  # apply velocity
+        self.rect.x += self.vel.x
         self.rect.y += self.vel.y
 
+class MovingPlatform(pygame.sprite.Sprite):  # similar to smart enemy class but for platforms
+    def __init__(self, pos, *groups):  # constructs platforms
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((96, 32))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+        self.speed = 2
+        self.vel = pygame.math.Vector2(0, 0)
+        self.direction = "left"
+
+    def update(self):
+
+        if self.direction == "left":
+            self.vel.x = -self.speed
+        else:
+            self.vel.x = self.speed
+
+        self.rect.x += self.vel.x
+        self.rect.y += self.vel.y
 
 main()  # run the main game loop
