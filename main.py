@@ -207,11 +207,11 @@ def main():  # main game
                     player.frictional = False
                     player.vel.x = smartPlatform.vel.x * 1.3
                     if not pygame.key.get_pressed()[pygame.K_a] and not pygame.key.get_pressed()[pygame.K_d]:
-                        player.moving = False
+                        player.animated = False
                     else:
-                        player.moving = True
+                        player.animated = True
                 elif pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_d]:
-                    player.moving = True
+                    player.animated = True
                 else:
                     player.frictional = True
 
@@ -270,7 +270,7 @@ class Player(pygame.sprite.Sprite):  # player class
         self.onGround = False
         self.direction = "left"
         self.shotCooldown = 20
-        self.moving = True
+        self.animated = True
 
         self.animationCooldown = 15
         self.animationState = 0
@@ -321,7 +321,7 @@ class Player(pygame.sprite.Sprite):  # player class
         self.animate()
 
     def animate(self):
-        if int(self.vel.x) == 0 or not self.moving:
+        if int(self.vel.x) == 0 or not self.animated:
             self.image = pygame.image.load('assets/player.png')
         elif self.direction == "right":
             self.animationCooldown -= 1
