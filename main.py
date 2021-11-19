@@ -46,13 +46,13 @@ def main():  # main game
         "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =    PPPPPPPP               P",
         "]                 =    =  CC                    =       =               = =                                 *****          = =             | =               =   =      =  =                 P",
         "]                 =   PPPPPP                    =       =         |     = =           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
-        "]                 =    =  =                     =       =               = =           *                    =     =         = =             | =               =   =      =  =                 P",
-        "]                 =    =  =                     =       =              PPPPP        |*R*|                  =     =         = =             | =              PPPPPPP     =  =      J          P",
+        "]                 =    =  =                     =       =              PPPPP          *                    =     =         = =             | =               =   =      =  =                 P",
+        "]                 =    =  =                     =       =               = =         |*R*|                  =     =         = =             | =              PPPPPPP     =  =      J          P",
         "]                 =    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   = =             | =                          =  =                 P",
         "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
-        "]               = =    =  =              = =    =       =               = =           =                    =     =    =    = =             | =                          =  =         *       P",
-        "]               = =    =  =              = =    =     * P *          PPPPPPPPP        =                   PPPPPPPPP   =    = =             | =           *              =  =        *C       P",
-        "]               = =    =  =              PPP    =     P P P                        C  =        E           =     =    =    = =         E   | =          CCC             =  =       CCCC      P",
+        "]               = =    =  =              = =    =       =            PPPPPPPPP        =                    =     =    =    = =             | =                          =  =         *       P",
+        "]               = =    =  =              = =    =     * P *                           =                   PPPPPPPPP   =    = =         C   | =           *              =  =        *C       P",
+        "]               = =    =  =              PPP    =     P P P                        C  =        E           =     =    =    = =        CC   | =          CCC             =  =       CCCC      P",
         "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
