@@ -210,9 +210,11 @@ def main():  # main game
                         player.moving = False
                     else:
                         player.moving = True
+                elif pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_d]:
+                    player.moving = True
                 else:
                     player.frictional = True
-                    player.moving = True
+
 
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
