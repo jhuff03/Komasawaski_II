@@ -415,7 +415,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def animate(self):
         self.animationCooldown -= 1
-        print(self.animationState)
+
         if self.animationCooldown <= 0:
             self.animationState += 1
             self.animationCooldown = 15
