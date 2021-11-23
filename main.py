@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 
-background_colour = (50, 50, 50)  # rgb colors - this is dark blue
+background_colour = (50, 50, 50)  # rgb colors - this is dark gray
 (width, height) = (1280, 720)  # resolution of game window
 screen = pygame.display.set_mode((width, height))  # creates screen
 screen.fill(background_colour)  # puts color onto screen
@@ -394,6 +394,9 @@ class Enemy(pygame.sprite.Sprite):
 
         self.bulletCooldown = random.randrange(0, 80)
 
+        self.animationCooldown = 15
+        self.animationState = 0
+
         self.speed = 3
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
@@ -407,6 +410,32 @@ class Enemy(pygame.sprite.Sprite):
 
         self.rect.x += self.vel.x  # apply velocity
         self.rect.y += self.vel.y
+
+        self.animate()
+
+    def animate(self):
+        self.animationCooldown -= 1
+        print(self.animationState)
+        if self.animationCooldown <= 0:
+            self.animationState += 1
+            self.animationCooldown = 15
+
+        if self.direction == "right":
+
+            if self.animationState == 0:
+                self.image = pygame.image.load('assets/enemy.png')
+            if self.animationState == 1:
+                self.image = pygame.image.load('assets/enemy2.png')
+            else:
+                self.animationState = 0
+        elif self.direction == "left":
+
+            if self.animationState == 0:
+                self.image = pygame.transform.flip(pygame.image.load('assets/enemy.png'), True, False)
+            if self.animationState == 1:
+                self.image = pygame.transform.flip(pygame.image.load('assets/enemy2.png'), True, False)
+            else:
+                self.animationState = 0
 
 
 class SmartEnemy(pygame.sprite.Sprite):
