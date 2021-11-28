@@ -144,16 +144,20 @@ def main():  # main game
 
         for player in players:
             if player.activeWeapon == 1:
-                pistolAmmoText = kFont.render(str(pistolAmmo), True, (255, 255, 255))
+                pistolAmmoText1 = kFont.render("TT-30", True, (255, 255, 255))
+                pistolAmmoText2 = kFont.render("AMMO: " + str(pistolAmmo), True, (255, 255, 255))
                 pistol = pygame.image.load('assets/pistol_icon.png')
                 screen.blit(pistol, (10, 40))
-                screen.blit(pistolAmmoText, (50, 40))
+                screen.blit(pistolAmmoText1, (50, 40))
+                screen.blit(pistolAmmoText2, (10, 70))
 
             if player.activeWeapon == 2:
-                akAmmoText = kFont.render(str(akAmmo), True, (255, 255, 255))
+                akAmmoText1 = kFont.render("AK-47", True, (255, 255, 255))
+                akAmmoText2 = kFont.render("AMMO: " + str(akAmmo), True, (255, 255, 255))
                 ak = pygame.image.load('assets/ak_icon.png')
                 screen.blit(ak, (10, 40))
-                screen.blit(akAmmoText, (50, 40))
+                screen.blit(akAmmoText1, (50, 40))
+                screen.blit(akAmmoText2, (10, 70))
 
     def killPlayer():
         global pistolAmmo
