@@ -143,12 +143,12 @@ def main():  # main game
         screen.blit(level_text, (10, 0))
 
         if pistolAmmo <= 10:
-            ttColor = (150, 0 , 0)
+            ttColor = (150, 0, 0)
         else:
             ttColor = (255, 255, 255)
 
         if akAmmo <= 10:
-            akColor = (150, 0 , 0)
+            akColor = (150, 0, 0)
         else:
             akColor = (255, 255, 255)
 
