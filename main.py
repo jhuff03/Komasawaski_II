@@ -424,19 +424,21 @@ class Enemy(pygame.sprite.Sprite):
 
             if self.animationState == 0:
                 self.image = pygame.image.load('assets/enemy.png')
-            if self.animationState == 1:
+            elif self.animationState == 1:
                 self.image = pygame.image.load('assets/enemy2.png')
-            if self.animationState == 2:
+            elif self.animationState == 2:
                 self.image = pygame.image.load('assets/enemy3.png')
+            else:
                 self.animationState = 0
         elif self.direction == "left":
 
             if self.animationState == 0:
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy.png'), True, False)
-            if self.animationState == 1:
+            elif self.animationState == 1:
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy2.png'), True, False)
-            if self.animationState == 3:
+            elif self.animationState == 3:
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy3.png'), True, False)
+            else:
                 self.animationState = 0
 
 
