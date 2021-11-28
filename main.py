@@ -260,7 +260,7 @@ def main():  # main game
                     scorecount += 100
 
         ammoGeneration -= 1
-        if ammoGeneration <= 0 and pistolAmmo < 10:
+        if ammoGeneration <= 0 and pistolAmmo < 10: # Give the player one bullet every 5 seconds while the player is low on pistol ammo
             pistolAmmo += 1
             ammoGeneration = 500
 
@@ -291,7 +291,7 @@ def main():  # main game
 
             for akAmmoPickup in akAmmoPickups:
                 if akAmmoPickup.rect.colliderect(player.rect):
-                    akAmmo += 25
+                    akAmmo += 5
                     akAmmoPickup.kill()
 
             if player.activeWeapon == 1:
