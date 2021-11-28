@@ -31,6 +31,8 @@ def main():  # main game
     global pistolAmmo
     global akAmmo
 
+    ammoGeneration = 500
+
     # list represents level
     if deflevel == 1:
         level = [
@@ -90,7 +92,6 @@ def main():  # main game
         ak = pygame.image.load('assets/ak_icon.png')
         screen.blit(ak, (10, 90))
         screen.blit(akAmmoText, (50, 90))
-
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()  # creates players group which can be tracked
@@ -238,6 +239,11 @@ def main():  # main game
                 if playerKillable.health <= 0:
                     playerKillable.kill()
                     scorecount += 100
+
+        ammoGeneration -= 1
+        if ammoGeneration <= 0:
+            pistolAmmo += 1
+            ammoGeneration = 500
 
         """
         All of the player's interactions should be handled below
