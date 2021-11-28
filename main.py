@@ -58,12 +58,12 @@ def main():  # main game
             "]          =   =    S>                       |  =  R    =               = =                  |                                             | =               =   =                           P",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =                           P",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =                           P",
-            "]         PPPPPPP =    =                        =       =               = =                                                 >              | =               =   =       **                  P",
+            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =       **                  P",
             "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =    PPPPPPPP               P",
             "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =      =  =                 P",
             "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
-            "]                 =    =  =                     =       =              PPPPP          *                    =     =         = =             | =               =   =      =  =                 P",
-            "]                 =    =  =                     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      =  =                 P",
+            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
             "]               = =    =  =              = =    =       =            PPPPPPPPP        =                    = > > =    =    = =             | =                          =  =         *       P",
@@ -93,6 +93,7 @@ def main():  # main game
     miniBosses = pygame.sprite.Group()
     smartPlatforms = pygame.sprite.Group()
     tt3AmmoPickups = pygame.sprite.Group()
+    akAmmoPickups = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -119,6 +120,8 @@ def main():  # main game
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
             if level[row][col] == ">":
                 Ammo((col * TILE_SIZE, row * TILE_SIZE), entities, tt3AmmoPickups)
+            if level[row][col] == "<":
+                AKAmmo((col * TILE_SIZE, row * TILE_SIZE), entities, akAmmoPickups)
             if level[row][col] == "-":
                 MovingPlatform((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, platforms, smartPlatforms)
 
@@ -285,6 +288,11 @@ def main():  # main game
                 if tt3AmmoPickup.rect.colliderect(player.rect):
                     pistolAmmo += 25
                     tt3AmmoPickup.kill()
+
+            for akAmmoPickup in akAmmoPickups:
+                if akAmmoPickup.rect.colliderect(player.rect):
+                    akAmmo += 25
+                    akAmmoPickup.kill()
 
             if player.activeWeapon == 1:
                 if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
@@ -610,6 +618,13 @@ class Ammo(pygame.sprite.Sprite):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))
         self.image = pygame.image.load('assets/ammo_pickup.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
+
+class AKAmmo(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load('assets/ak_ammo_pickup.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
 
 class Bullet(pygame.sprite.Sprite):
