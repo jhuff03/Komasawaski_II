@@ -547,7 +547,7 @@ class MovingPlatform(pygame.sprite.Sprite):  # similar to smart enemy class but 
     def __init__(self, pos, *groups):  # constructs platforms
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((96, 32))
-        self.image.fill((255, 0, 0))
+        self.image = pygame.image.load('assets/moving_platform.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
         self.speed = 2
         self.vel = pygame.math.Vector2(0, 0)
