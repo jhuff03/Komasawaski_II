@@ -75,23 +75,7 @@ def main():  # main game
     level_height = len(level) * TILE_SIZE
 
     kFont = pygame.font.Font("assets/font/5x5.ttf", 30)
-    def printthehud():
-        levelcounter = "LEVEL: " + str(deflevel)
-        lifecounter = "LIVES: " + str(lives)
-        coincounter = "COINS: " + str(coinCount)
-        scorecounter = "SCORE: " + str(scorecount)
-        level_text = kFont.render(levelcounter + "        " + lifecounter + "         " + coincounter + "         " + scorecounter, True, (255, 255, 255))
-        screen.blit(level_text, (10, 0))
 
-        pistolAmmoText = kFont.render(str(pistolAmmo), True, (255, 255, 255))
-        pistol = pygame.image.load('assets/pistol_icon.png')
-        screen.blit(pistol, (10, 40))
-        screen.blit(pistolAmmoText, (50, 40))
-
-        akAmmoText = kFont.render(str(akAmmo), True, (255, 255, 255))
-        ak = pygame.image.load('assets/ak_icon.png')
-        screen.blit(ak, (10, 90))
-        screen.blit(akAmmoText, (50, 90))
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()  # creates players group which can be tracked
@@ -146,6 +130,27 @@ def main():  # main game
             entity.rect.y += scroll[1]
         player.rect.x = width / 2  # center the player in the screen
         player.rect.y = height / 2
+
+    def printthehud():
+        levelcounter = "LEVEL: " + str(deflevel)
+        lifecounter = "LIVES: " + str(lives)
+        coincounter = "COINS: " + str(coinCount)
+        scorecounter = "SCORE: " + str(scorecount)
+        level_text = kFont.render(levelcounter + "        " + lifecounter + "         " + coincounter + "         " + scorecounter, True, (255, 255, 255))
+        screen.blit(level_text, (10, 0))
+
+        for player in players:
+            if player.activeWeapon == 1:
+                pistolAmmoText = kFont.render(str(pistolAmmo), True, (255, 255, 255))
+                pistol = pygame.image.load('assets/pistol_icon.png')
+                screen.blit(pistol, (10, 40))
+                screen.blit(pistolAmmoText, (50, 40))
+
+            if player.activeWeapon == 2:
+                akAmmoText = kFont.render(str(akAmmo), True, (255, 255, 255))
+                ak = pygame.image.load('assets/ak_icon.png')
+                screen.blit(ak, (10, 40))
+                screen.blit(akAmmoText, (50, 40))
 
     def killPlayer():
         global pistolAmmo
