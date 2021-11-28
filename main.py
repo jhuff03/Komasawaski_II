@@ -66,8 +66,8 @@ def main():  # main game
             "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                    = > > =    =    = =             | =                          =  =         *       P",
-            "]               = =    =  =              = =    =     * P *                           =                   PPPPPPPPP   =    = =         C   | =           *              =  =        *C       P",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =             | =                          =  =         *       P",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =         C   | =           *              =  =        *C       P",
             "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =        CC   | =          CCC             =  =       CCCC      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
