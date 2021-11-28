@@ -4,7 +4,7 @@ import random
 
 pygame.init()
 
-background_colour = (50, 50, 50)  # rgb colors - this is dark gray
+background_colour = (100, 100, 100)  # rgb colors - this is dark gray
 (width, height) = (1280, 720)  # resolution of game window
 screen = pygame.display.set_mode((width, height))  # creates screen
 screen.fill(background_colour)  # puts color onto screen
@@ -86,6 +86,11 @@ def main():  # main game
         screen.blit(pistol, (10, 40))
         screen.blit(pistolAmmoText, (50, 40))
 
+        akAmmoText = kFont.render(str(akAmmo), True, (255, 255, 255))
+        ak = pygame.image.load('assets/ak_icon.png')
+        screen.blit(ak, (10, 90))
+        screen.blit(akAmmoText, (50, 90))
+
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()  # creates players group which can be tracked
@@ -152,7 +157,7 @@ def main():  # main game
     running = True
     while running:  # game loop
         clock.tick(100)  # set the FPS to 100
-        # print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+        #print("FPS:", int(clock.get_fps())) # print the FPS to the logs
 
         screen.fill(background_colour)  # fills background color every frame
 
