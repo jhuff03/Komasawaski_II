@@ -240,6 +240,7 @@ def main():  # main game
             if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
                 Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
                 player.shotCooldown = 20
+                player.shooting = True
 
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
@@ -287,6 +288,8 @@ class Player(pygame.sprite.Sprite):  # player class
         self.shotCooldown = 20
 
         self.moving = False
+        self.shooting = False
+        self.shootingCooldown = 20
 
         self.animationCooldown = 15
         self.animationState = 0
@@ -379,6 +382,22 @@ class Player(pygame.sprite.Sprite):  # player class
             if self.animationState == 3:
                 self.image = pygame.transform.flip(pygame.image.load('assets/player_run_2.png'), True, False)
                 self.animationState = 0
+
+        if self.shooting:
+            self.shootingCooldown -= 1
+            if self.direction == "right":
+                gun = pygame.image.load("assets/pistol.png")
+            else:
+                gun = pygame.transform.flip(pygame.image.load('assets/pistol.png'), True, False)
+            screen.blit(gun, (self.rect))
+            if not self.moving:
+                if self.direction == "right":
+                    self.image = pygame.image.load('assets/player_run_2.png')
+                elif self.direction == "left":
+                    self.image = pygame.transform.flip(pygame.image.load('assets/player_run_2.png'), True, False)
+        if self.shootingCooldown <= 0:
+            self.shootingCooldown = 20
+            self.shooting = False
 
 
 class Platform(pygame.sprite.Sprite):  # similar to player class but for platforms
