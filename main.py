@@ -19,6 +19,8 @@ coinCount = 0
 lives = 5
 scorecount = 0
 deflevel = 1
+pistolAmmo = 20
+akAmmo = 0
 
 
 def main():  # main game
@@ -26,6 +28,8 @@ def main():  # main game
     global scorecount
     global lives
     global deflevel
+    global pistolAmmo
+    global akAmmo
 
     # list represents level
     if deflevel == 1:
@@ -76,6 +80,11 @@ def main():  # main game
         scorecounter = "SCORE: " + str(scorecount)
         level_text = kFont.render(levelcounter + "        " + lifecounter + "         " + coincounter + "         " + scorecounter, True, (255, 255, 255))
         screen.blit(level_text, (10, 0))
+
+        pistolAmmoText = kFont.render(str(pistolAmmo), True, (255, 255, 255))
+        pistol = pygame.image.load('assets/pistol_icon.png')
+        screen.blit(pistol, (10, 40))
+        screen.blit(pistolAmmoText, (50, 40))
 
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
@@ -237,10 +246,11 @@ def main():  # main game
                     coinCount += 1
                     coin.kill()
                     scorecount += 10
-            if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
+            if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
                 Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
                 player.shotCooldown = 20
                 player.shooting = True
+                pistolAmmo -= 1
 
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
