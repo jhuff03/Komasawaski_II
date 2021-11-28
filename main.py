@@ -20,7 +20,7 @@ lives = 5
 scorecount = 0
 deflevel = 1
 pistolAmmo = 25
-akAmmo = 0
+akAmmo = 5
 
 
 def main():  # main game
@@ -104,7 +104,8 @@ def main():  # main game
     coins = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
     playerKillables = pygame.sprite.Group()  # list of all things that can have their health lowered by the player firing bullets at them
-    playerBullets = pygame.sprite.Group()
+    playerPistolBullets = pygame.sprite.Group()
+    playerAKBullets = pygame.sprite.Group()
     miniBosses = pygame.sprite.Group()
     smartPlatforms = pygame.sprite.Group()
     tt3AmmoPickups = pygame.sprite.Group()
@@ -230,18 +231,28 @@ def main():  # main game
             if level_width * 5 < bullet.rect.x < 0 - level_width * 5:
                 bullet.kill()
 
-        for playerBullet in playerBullets:
+        for playerPistolBullet in playerPistolBullets:
             for playerKillable in playerKillables:
-                if playerBullet.rect.colliderect(playerKillable.rect):  # Everything that can be killed by the player MUST have a health variable even if it is just 1
+                if playerPistolBullet.rect.colliderect(playerKillable.rect):  # Everything that can be killed by the player MUST have a health variable even if it is just 1
                     playerKillable.health -= 1
-                    playerBullet.kill()
+                    playerPistolBullet.kill()
+                    scorecount += 10
+                if playerKillable.health <= 0:
+                    playerKillable.kill()
+                    scorecount += 100
+
+        for playerAKBullet in playerAKBullets:
+            for playerKillable in playerKillables:
+                if playerAKBullet.rect.colliderect(playerKillable.rect):
+                    playerKillable.health -= 10 #AK Bullets do 10x the damage of a regular bullet
+                    playerAKBullet.kill()
                     scorecount += 10
                 if playerKillable.health <= 0:
                     playerKillable.kill()
                     scorecount += 100
 
         ammoGeneration -= 1
-        if ammoGeneration <= 0:
+        if ammoGeneration <= 0 and pistolAmmo < 10:
             pistolAmmo += 1
             ammoGeneration = 500
 
@@ -272,10 +283,17 @@ def main():  # main game
 
             if player.activeWeapon == 1:
                 if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
-                    Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
-                    player.shotCooldown = 20
+                    Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerPistolBullets)
+                    player.shotCooldown = 30
                     player.shooting = True
                     pistolAmmo -= 1
+
+            if player.activeWeapon == 2:
+                if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and akAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
+                    Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerAKBullets)
+                    player.shotCooldown = 10
+                    player.shooting = True
+                    akAmmo -= 1
 
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
@@ -319,11 +337,11 @@ class Player(pygame.sprite.Sprite):  # player class
         self.vel = pygame.math.Vector2(0, 0)
         self.onGround = False
         self.direction = "left"
-        self.shotCooldown = 20
+        self.shotCooldown = 30
 
         self.moving = False
         self.shooting = False
-        self.shootingCooldown = 20
+        self.shootingCooldown = 30
 
         self.activeWeapon = 1
 
@@ -360,6 +378,11 @@ class Player(pygame.sprite.Sprite):  # player class
         if keys[pygame.K_SPACE] and self.onGround:
             self.vel.y -= self.jumpStrength
             self.onGround = False
+
+        if keys[pygame.K_1]:
+            self.activeWeapon = 1
+        if keys[pygame.K_2]:
+            self.activeWeapon = 2
 
         if self.vel.x > self.speedMax:
             self.vel.x = self.speedMax
@@ -422,17 +445,29 @@ class Player(pygame.sprite.Sprite):  # player class
         if self.shooting:
             self.shootingCooldown -= 1
             if self.direction == "right":
-                gun = pygame.image.load("assets/pistol.png")
+                if self.activeWeapon == 1:
+                    gun = pygame.image.load("assets/pistol.png")
+                elif self.activeWeapon == 2:
+                    gun = pygame.image.load("assets/ak.png")
             else:
-                gun = pygame.transform.flip(pygame.image.load('assets/pistol.png'), True, False)
-            screen.blit(gun, (self.rect))
+                if self.activeWeapon == 1:
+                    gun = pygame.transform.flip(pygame.image.load('assets/pistol.png'), True, False)
+                if self.activeWeapon == 2:
+                    gun = pygame.transform.flip(pygame.image.load('assets/ak.png'), True, False)
+            if self.activeWeapon == 1:
+                screen.blit(gun, (self.rect))
+            if self.activeWeapon == 2:
+                if self.direction == "right":
+                    screen.blit(gun, (self.rect))
+                if self.direction == "left":
+                    screen.blit(gun, (self.rect.x - 6, self.rect.y))
             if not self.moving:
                 if self.direction == "right":
                     self.image = pygame.image.load('assets/player_run_2.png')
                 elif self.direction == "left":
                     self.image = pygame.transform.flip(pygame.image.load('assets/player_run_2.png'), True, False)
         if self.shootingCooldown <= 0:
-            self.shootingCooldown = 20
+            self.shootingCooldown = 30
             self.shooting = False
 
 
