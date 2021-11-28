@@ -229,6 +229,8 @@ def main():  # main game
                 if smartPlatform.rect.colliderect(player.rect.x, player.rect.y + 1.3 * player.vel.y, player.image.get_width(), player.image.get_height()):
                     player.frictional = False
                     player.vel.x = smartPlatform.vel.x * 1.3
+                else:
+                    player.frictional = True
 
             for coin in coins:
                 if coin.rect.colliderect(player.rect):
