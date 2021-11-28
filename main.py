@@ -92,7 +92,7 @@ def main():  # main game
     playerAKBullets = pygame.sprite.Group()
     miniBosses = pygame.sprite.Group()
     smartPlatforms = pygame.sprite.Group()
-    tt3AmmoPickups = pygame.sprite.Group()
+    tt30AmmoPickups = pygame.sprite.Group()
     akAmmoPickups = pygame.sprite.Group()
 
     # build the level
@@ -119,7 +119,7 @@ def main():  # main game
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
             if level[row][col] == ">":
-                Ammo((col * TILE_SIZE, row * TILE_SIZE), entities, tt3AmmoPickups)
+                Ammo((col * TILE_SIZE, row * TILE_SIZE), entities, tt30AmmoPickups)
             if level[row][col] == "<":
                 AKAmmo((col * TILE_SIZE, row * TILE_SIZE), entities, akAmmoPickups)
             if level[row][col] == "-":
@@ -142,10 +142,20 @@ def main():  # main game
         level_text = kFont.render(levelcounter + "        " + lifecounter + "         " + coincounter + "         " + scorecounter, True, (255, 255, 255))
         screen.blit(level_text, (10, 0))
 
+        if pistolAmmo <= 10:
+            ttColor = (150, 0 , 0)
+        else:
+            ttColor = (255, 255, 255)
+
+        if akAmmo <= 10:
+            akColor = (150, 0 , 0)
+        else:
+            akColor = (255, 255, 255)
+
         for player in players:
             if player.activeWeapon == 1:
                 pistolAmmoText1 = kFont.render("TT-30", True, (255, 255, 255))
-                pistolAmmoText2 = kFont.render("AMMO: " + str(pistolAmmo), True, (255, 255, 255))
+                pistolAmmoText2 = kFont.render("AMMO: " + str(pistolAmmo), True, ttColor)
                 pistol = pygame.image.load('assets/pistol_icon.png')
                 screen.blit(pistol, (10, 40))
                 screen.blit(pistolAmmoText1, (50, 40))
@@ -153,7 +163,7 @@ def main():  # main game
 
             if player.activeWeapon == 2:
                 akAmmoText1 = kFont.render("AK-47", True, (255, 255, 255))
-                akAmmoText2 = kFont.render("AMMO: " + str(akAmmo), True, (255, 255, 255))
+                akAmmoText2 = kFont.render("AMMO: " + str(akAmmo), True, akColor)
                 ak = pygame.image.load('assets/ak_icon.png')
                 screen.blit(ak, (10, 40))
                 screen.blit(akAmmoText1, (50, 40))
@@ -288,10 +298,10 @@ def main():  # main game
                     coin.kill()
                     scorecount += 10
 
-            for tt3AmmoPickup in tt3AmmoPickups:
-                if tt3AmmoPickup.rect.colliderect(player.rect):
+            for tt30AmmoPickup in tt30AmmoPickups:
+                if tt30AmmoPickup.rect.colliderect(player.rect):
                     pistolAmmo += 25
-                    tt3AmmoPickup.kill()
+                    tt30AmmoPickup.kill()
 
             for akAmmoPickup in akAmmoPickups:
                 if akAmmoPickup.rect.colliderect(player.rect):
