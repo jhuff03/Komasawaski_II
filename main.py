@@ -19,7 +19,7 @@ coinCount = 0
 lives = 5
 scorecount = 0
 deflevel = 1
-pistolAmmo = 20
+pistolAmmo = 25
 akAmmo = 0
 
 
@@ -50,23 +50,23 @@ def main():  # main game
             "]     =    =   =                                =       =               = =                                                                                                                   ",
             "]     =    =   =                                =       =               = =                                                                                                                   ",
             "]     =    =   =                                =       =               = =                                                                                                                   ",
-            "]   | =  R = | =                                =       =               = =                                                                                                                   ",
+            "]   | =R > = | =                                =       =               = =                                                                                                                   ",
             "]    PPPPPPPP  =                                =       =               = =                                                                                                                   ",
             "]          =   =                                =       =               = =                                                                  PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-            "]          =   =    S                        |  =  R    =               = =                  |                                             | =               =   =                           P",
+            "]          =   =    S>                       |  =  R    =               = =                  |                                             | =               =   =                           P",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =                           P",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =                           P",
-            "]         PPPPPPP =    =                        =       =               = =                                                                | =               =   =       **                  P",
+            "]         PPPPPPP =    =                        =       =               = =                                                 >              | =               =   =       **                  P",
             "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =    PPPPPPPP               P",
-            "]                 =    =  CC                    =       =               = =                                 *****          = =             | =               =   =      =  =                 P",
-            "]                 =   PPPPPP                    =       =         |     = =           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
+            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =      =  =                 P",
+            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
             "]                 =    =  =                     =       =              PPPPP          *                    =     =         = =             | =               =   =      =  =                 P",
-            "]                 =    =  =                     =       =               = =         |*R*|                  =     =         = =             | =              PPPPPPP     =  =      J          P",
-            "]                 =    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   = =             | =                          =  =                 P",
+            "]                 =    =  =                     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
+            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                    =     =    =    = =             | =                          =  =         *       P",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                    = > > =    =    = =             | =                          =  =         *       P",
             "]               = =    =  =              = =    =     * P *                           =                   PPPPPPPPP   =    = =         C   | =           *              =  =        *C       P",
-            "]               = =    =  =              PPP    =     P P P                        C  =        E           =     =    =    = =        CC   | =          CCC             =  =       CCCC      P",
+            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =        CC   | =          CCC             =  =       CCCC      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
@@ -101,6 +101,7 @@ def main():  # main game
     playerBullets = pygame.sprite.Group()
     miniBosses = pygame.sprite.Group()
     smartPlatforms = pygame.sprite.Group()
+    tt3AmmoPickups = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -125,6 +126,8 @@ def main():  # main game
                 MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
+            if level[row][col] == ">":
+                Ammo((col * TILE_SIZE, row * TILE_SIZE), entities, tt3AmmoPickups)
             if level[row][col] == "-":
                 MovingPlatform((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, platforms, smartPlatforms)
 
@@ -138,8 +141,12 @@ def main():  # main game
         player.rect.y = height / 2
 
     def killPlayer():
+        global pistolAmmo
+        global akAmmo
         global lives
         lives -= 1
+        pistolAmmo = 25
+        akAmmo = 0
         main()
 
     running = True
@@ -246,11 +253,18 @@ def main():  # main game
                     coinCount += 1
                     coin.kill()
                     scorecount += 10
-            if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
-                Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
-                player.shotCooldown = 20
-                player.shooting = True
-                pistolAmmo -= 1
+
+            for tt3AmmoPickup in tt3AmmoPickups:
+                if tt3AmmoPickup.rect.colliderect(player.rect):
+                    pistolAmmo += 25
+                    tt3AmmoPickup.kill()
+
+            if player.activeWeapon == 1:
+                if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
+                    Bullet((player.rect.x + 8, player.rect.y + 16), player.direction, not pygame.key.get_pressed()[pygame.K_w], not pygame.key.get_pressed()[pygame.K_s], entities, bullets, playerBullets)
+                    player.shotCooldown = 20
+                    player.shooting = True
+                    pistolAmmo -= 1
 
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
@@ -288,8 +302,7 @@ class Player(pygame.sprite.Sprite):  # player class
         super().__init__(*groups)  # initializes every single group by adding player to each group
         self.image = pygame.Surface((16, 32))  # creates player as a 16x32 surface
         self.image.fill((255, 255, 255))  # makes the player white
-        self.rect = self.image.get_rect(
-            topleft=pos)  # sets the location of the player to the top left corner of the surface
+        self.rect = self.image.get_rect(topleft=pos)  # sets the location of the player to the top left corner of the surface
 
         self.frictional = True
         self.vel = pygame.math.Vector2(0, 0)
@@ -300,6 +313,8 @@ class Player(pygame.sprite.Sprite):  # player class
         self.moving = False
         self.shooting = False
         self.shootingCooldown = 20
+
+        self.activeWeapon = 1
 
         self.animationCooldown = 15
         self.animationState = 0
@@ -539,6 +554,12 @@ class Coin(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/coin.png')
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
 
+class Ammo(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load('assets/ammo_pickup.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, direction, up, down, *groups):
