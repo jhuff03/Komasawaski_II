@@ -161,7 +161,7 @@ def main():  # main game
         global lives
         lives -= 1
         pistolAmmo = 25
-        akAmmo = 0
+        akAmmo = 5
         main()
 
     running = True
