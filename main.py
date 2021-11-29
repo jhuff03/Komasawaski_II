@@ -76,7 +76,6 @@ def main():  # main game
 
     kFont = pygame.font.Font("assets/font/5x5.ttf", 30)
 
-
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()  # creates players group which can be tracked
     platforms = pygame.sprite.Group()  # creates platforms group which can be tracked
@@ -94,6 +93,7 @@ def main():  # main game
     smartPlatforms = pygame.sprite.Group()
     tt30AmmoPickups = pygame.sprite.Group()
     akAmmoPickups = pygame.sprite.Group()
+    blueKeyCards = pygame.sprite.Group()
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -181,7 +181,7 @@ def main():  # main game
     running = True
     while running:  # game loop
         clock.tick(100)  # set the FPS to 100
-        #print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+        # print("FPS:", int(clock.get_fps())) # print the FPS to the logs
 
         screen.fill(background_colour)  # fills background color every frame
 
@@ -253,28 +253,31 @@ def main():  # main game
             if level_width * 5 < bullet.rect.x < 0 - level_width * 5:
                 bullet.kill()
 
-        for playerPistolBullet in playerPistolBullets:
-            for playerKillable in playerKillables:
+        for playerKillable in playerKillables:
+            for playerPistolBullet in playerPistolBullets:
                 if playerPistolBullet.rect.colliderect(playerKillable.rect):  # Everything that can be killed by the player MUST have a health variable even if it is just 1
                     playerKillable.health -= 1
                     playerPistolBullet.kill()
                     scorecount += 10
                 if playerKillable.health <= 0:
-                    playerKillable.kill()
                     scorecount += 100
+                    if isinstance(playerKillable, MiniBoss):  # On the death of something that is killable by a player, check to see if it is a miniboss
+                        BlueKey((playerKillable.rect.x + (playerKillable.rect.width / 2), playerKillable.rect.y + (playerKillable.rect.height / 2)), entities, blueKeyCards)  # If it is the miniboss, spawn the blue keycard at it's center before killing it
+                    playerKillable.kill()  # If not... just kill anyway
 
-        for playerAKBullet in playerAKBullets:
-            for playerKillable in playerKillables:
+            for playerAKBullet in playerAKBullets:
                 if playerAKBullet.rect.colliderect(playerKillable.rect):
-                    playerKillable.health -= 10 #AK Bullets do 10x the damage of a regular bullet
+                    playerKillable.health -= 10  # AK Bullets do 10x the damage of a regular bullet
                     playerAKBullet.kill()
                     scorecount += 10
                 if playerKillable.health <= 0:
-                    playerKillable.kill()
                     scorecount += 100
+                    if isinstance(playerKillable, MiniBoss):  # On the death of something that is killable by a player, check to see if it is a miniboss
+                        BlueKey((playerKillable.rect.x + (playerKillable.rect.width / 2), playerKillable.rect.y + (playerKillable.rect.height / 2)), entities, blueKeyCards)  # If it is the miniboss, spawn the blue keycard at it's center before killing it
+                    playerKillable.kill()  # If not... just kill anyway
 
         ammoGeneration -= 1
-        if ammoGeneration <= 0 and pistolAmmo < 10: # Give the player one bullet every 5 seconds while the player is low on pistol ammo
+        if ammoGeneration <= 0 and pistolAmmo < 10:  # Give the player one bullet every 5 seconds while the player is low on pistol ammo
             pistolAmmo += 1
             ammoGeneration = 500
 
@@ -307,6 +310,11 @@ def main():  # main game
                 if akAmmoPickup.rect.colliderect(player.rect):
                     akAmmo += 5
                     akAmmoPickup.kill()
+
+            for blueKeyCard in blueKeyCards:
+                if blueKeyCard.rect.colliderect(player.rect):
+                    player.keys[0] = True
+                    blueKeyCard.kill()
 
             if player.activeWeapon == 1:
                 if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
@@ -379,6 +387,8 @@ class Player(pygame.sprite.Sprite):  # player class
         self.speedMax = 5
         self.jumpStrength = 10.2
 
+        self.keys = [False, False, False]  # blue green red
+
     def update(self):  # keyboard inputs for player
         self.shotCooldown -= 1
 
@@ -428,7 +438,6 @@ class Player(pygame.sprite.Sprite):  # player class
         # FRICTION:
         if self.frictional:
             self.vel.x = (self.vel.x / 1.1)  # Apply friction to the movement of the player by slowly lowering it's velocity
-
 
         self.animate()
 
@@ -505,6 +514,7 @@ class Platform(pygame.sprite.Sprite):  # similar to player class but for platfor
         self.image = pygame.image.load('assets/tile.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
+
 class Crate(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
@@ -512,12 +522,14 @@ class Crate(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/crate.png')
         self.rect = self.image.get_rect(topleft=pos)
 
+
 class Support(pygame.sprite.Sprite):  # see platform class
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))  # supports are 32x32 and only to be placed every 32 pixels.
         self.image = pygame.image.load('assets/support.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
 
 class Barrier(pygame.sprite.Sprite):  # Invisible barriers to prevent the player from going out of bounds
     def __init__(self, pos, *groups):
@@ -627,19 +639,22 @@ class Coin(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/coin.png')
         self.rect = self.image.get_rect(center=pos)  # coords assigned to center
 
+
 class Ammo(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))
         self.image = pygame.image.load('assets/ammo_pickup.png')
-        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
+        self.rect = self.image.get_rect(topleft=pos)
+
 
 class AKAmmo(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))
         self.image = pygame.image.load('assets/ak_ammo_pickup.png')
-        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
+        self.rect = self.image.get_rect(topleft=pos)
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, direction, up, down, *groups):
@@ -702,6 +717,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
 
+
 class MovingPlatform(pygame.sprite.Sprite):  # similar to smart enemy class but for platforms
     def __init__(self, pos, *groups):  # constructs platforms
         super().__init__(*groups)  # initializes groups
@@ -721,5 +737,14 @@ class MovingPlatform(pygame.sprite.Sprite):  # similar to smart enemy class but 
 
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
+
+
+class BlueKey(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load('assets/blue_key.png')
+        self.rect = self.image.get_rect(center=pos)
+
 
 main()  # run the main game loop
