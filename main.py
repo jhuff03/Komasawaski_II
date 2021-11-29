@@ -94,6 +94,8 @@ def main():  # main game
     tt30AmmoPickups = pygame.sprite.Group()
     akAmmoPickups = pygame.sprite.Group()
     blueKeyCards = pygame.sprite.Group()
+    turners = pygame.sprite.Group()
+
 
     # build the level
     for row in range(0, len(level)):  # traverse 2d array, put platforms at P and spawns the player at S
@@ -107,7 +109,7 @@ def main():  # main game
             if level[row][col] == "]":
                 Barrier((col * TILE_SIZE, row * TILE_SIZE), entities, platforms)
             if level[row][col] == "E":
-                Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, hasCollidePhysics, playerKillers, playerKillables)
+                Enemy((col * TILE_SIZE, row * TILE_SIZE), entities, enemies, turners, hasCollidePhysics, playerKillers, playerKillables)
             if level[row][col] == "R":
                 SmartEnemy((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, playerKillers, playerKillables)
             if level[row][col] == "|":
@@ -115,7 +117,7 @@ def main():  # main game
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
             if level[row][col] == "J":
-                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, enemies, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
+                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, turners, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
             if level[row][col] == ">":
@@ -213,15 +215,15 @@ def main():  # main game
                 entity.rect.x += scroll[0]  # move everything other than the player by that velocity
                 entity.rect.y += scroll[1]
 
-        for enemy in enemies:  # handle enemy / platform collisions for enemy turnaround
+        for turner in turners:  # handle enemy / platform collisions for enemy turnaround
             for platform in platforms:
-                if platform.rect.colliderect(enemy.rect.x + 2 * enemy.vel.x, enemy.rect.y, enemy.rect.width, enemy.rect.height):  # X Collisions
-                    if enemy.direction == "left":
-                        enemy.direction = "right"
-                        enemy.vel.x = 0
+                if platform.rect.colliderect(turner.rect.x + 2 * turner.vel.x, turner.rect.y, turner.rect.width, turner.rect.height):  # X Collisions
+                    if turner.direction == "left":
+                        turner.direction = "right"
+                        turner.vel.x = 0
                     else:
-                        enemy.direction = "left"
-                        enemy.vel.x = 0
+                        turner.direction = "left"
+                        turner.vel.x = 0
 
         for collider in hasCollidePhysics:  # handle non-player collisions. Any entity in the hasCollidePhysics group will collide with floors and walls
             for platform in platforms:
@@ -242,6 +244,13 @@ def main():  # main game
                         miniBoss.direction = "right"
                     else:
                         miniBoss.direction = "left"
+
+        for enemy in enemies:  # Handle when enemies fire
+            enemy.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
+            if enemy.bulletCooldown <= 0:
+                Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets,
+                       playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                enemy.bulletCooldown = 80
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
@@ -337,12 +346,6 @@ def main():  # main game
             for playerKiller in playerKillers:
                 if playerKiller.rect.colliderect(player.rect):  # Example of general, clipping collisions. This is great for coin or powerup pickups, bullet collisions, or death
                     killPlayer()
-
-            for enemy in enemies:  # Handle when enemies fire
-                enemy.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
-                if enemy.bulletCooldown <= 0:
-                    Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
-                    enemy.bulletCooldown = 80
 
             for miniBoss in miniBosses: # Handle miniboss attacks
                 if abs(player.rect.x - miniBoss.rect.x) < 200:
@@ -712,7 +715,6 @@ class MiniBoss(pygame.sprite.Sprite):
         self.speed = 2
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
-
 
 
     def update(self):
