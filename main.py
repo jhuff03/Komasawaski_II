@@ -66,9 +66,9 @@ def main():  # main game
             "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =             | =                          =  =         *       P",
-            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =         C   | =           *              =  =        *C       P",
-            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =        CC   | =          CCC             =  =       CCCC      P",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =                          =  =         *       P",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =           *              =  =        *C       P",
+            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =          CCC             =  =       CCCC      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
@@ -339,6 +339,13 @@ def main():  # main game
                 if enemy.bulletCooldown <= 0:
                     Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets, playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
                     enemy.bulletCooldown = 80
+
+            for miniBoss in miniBosses: # Handle miniboss attacks
+                if abs(player.rect.x - miniBoss.rect.x) < 200:
+                    if player.rect.x < miniBoss.rect.x:
+                        player.vel.x += .3
+                    if player.rect.x > miniBoss.rect.x:
+                        player.vel.x -= .3
 
             for platform in platforms:  # Destroy bullets on contact with platforms
                 for bullet in bullets:
@@ -694,13 +701,15 @@ class MiniBoss(pygame.sprite.Sprite):
         self.image.fill((255, 0, 0))  # red - placeholder texture
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
-        self.health = 15
+        self.health = 50
         self.jumpStrength = 15
         self.jumpCooldown = 200
         self.bulletCooldown = random.randrange(70, 90)
         self.speed = 2
         self.vel = pygame.math.Vector2(0, 0)
         self.direction = "left"  # set default direction
+
+
 
     def update(self):
         self.jumpCooldown -= 1
