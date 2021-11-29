@@ -55,14 +55,14 @@ def main():  # main game
             "]   | =R > = | =                                =       =               = =                                                                                                                   ",
             "]    PPPPPPPP  =                                =       =               = =                                                                                                                   ",
             "]          =   =                                =       =               = =                                                                  PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-            "]          =   =    S>                       |  =  R    =               = =                  |                                             | =               =   =                           P",
+            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =                           P",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =                           P",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =                           P",
             "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =       **                  P",
             "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =    PPPPPPPP               P",
             "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =      =  =                 P",
             "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =      =  =                 P",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      =  =                 P",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               = S =      =  =                 P",
             "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                        PPPPPPPP               P",
@@ -251,6 +251,13 @@ def main():  # main game
                 Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets,
                        playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
                 enemy.bulletCooldown = 80
+
+        for miniBoss in miniBosses:  # Handle when enemies fire
+            miniBoss.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
+            if miniBoss.bulletCooldown <= 0:
+                Laser((miniBoss.rect.x + 16, miniBoss.rect.y + 16), miniBoss.direction, True, True, entities,
+                       playerKillers, bullets)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                miniBoss.bulletCooldown = 80
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
@@ -760,6 +767,28 @@ class BlueKey(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 32))
         self.image = pygame.image.load('assets/blue_key.png')
         self.rect = self.image.get_rect(center=pos)
+
+
+class Laser(pygame.sprite.Sprite):
+    def __init__(self, pos, direction, up, down, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((100, 12))
+        self.image = pygame.image.load('assets/laser.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to center
+
+        self.speed = 10
+        self.vel = pygame.math.Vector2(0, 0)
+
+        if direction == "right":
+            self.vel.x = self.speed
+        if direction == "left":
+            self.vel.x = -self.speed
+
+
+    def update(self):
+        self.rect.x += self.vel.x
+        self.rect.y += self.vel.y
+
 
 
 main()  # run the main game loop
