@@ -169,6 +169,10 @@ def main():  # main game
                 screen.blit(akAmmoText1, (50, 40))
                 screen.blit(akAmmoText2, (10, 70))
 
+            if player.keys[0]:
+                bk = pygame.image.load('assets/blue_key.png')
+                screen.blit(bk, (width - (10 + 32), 40))
+
     def killPlayer():
         global pistolAmmo
         global akAmmo
