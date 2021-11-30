@@ -50,11 +50,11 @@ def main():  # main game
             "]     =    =|  =       R                 |      =       =               = =                                                                                                                   ",
             "]     =    =   =                                =       =               = =                                                                                                                   ",
             "]     =    =   =                                =       =               = =                                                                                                                   ",
-            "]     =    =   =                                =       =               = =                                                                                                                   ",
-            "]     =    =   =                                =       =               = =                                                                                                                   ",
-            "]   | =R > = | =                                =       =               = =                                                                                                                   ",
-            "]    PPPPPPPP  =                                =       =               = =                                                                                                                   ",
-            "]          =   =                                =       =               = =                                                                  PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "]     =    =   =                                =       =               = =                                                                | =                                                ",
+            "]     =    =   =                                =       =               = =                                                                | =                                                ",
+            "]   | =R > = | =                                =       =               = =                                                                | =                                                ",
+            "]    PPPPPPPP  =                                =       =               = =                                                                | =                                                ",
+            "]          =   =                                =       =               = =                                                                | = PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =                           P",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =                           P",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =                           P",
@@ -711,7 +711,7 @@ class Bullet(pygame.sprite.Sprite):
 class MiniBoss(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):  # constructs miniboss
         super().__init__(*groups)  # initializes groups
-        self.image = pygame.Surface((64, 64))  # boss is 64x64
+        self.image = pygame.Surface((64, 128))  # boss is 64x128
         self.image.fill((255, 0, 0))  # red - placeholder texture
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
