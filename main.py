@@ -13,6 +13,8 @@ clock = pygame.time.Clock()
 
 TILE_SIZE = 32
 GRAVITY = pygame.math.Vector2(0, 0.3)
+kFont = pygame.font.Font("assets/font/5x5.ttf", 30)
+bigkFont = pygame.font.Font("assets/font/5x5.ttf", 80)
 
 coinCount = 0
 
@@ -22,6 +24,45 @@ deflevel = 1
 pistolAmmo = 25
 akAmmo = 5
 
+def gameOver():
+    global deflevel
+    global lives
+    global scorecount
+    global pistolAmmo
+    global akAmmo
+    global coinCount
+
+    running = True
+    while running:  # game loop
+        clock.tick(100)  # set the FPS to 100
+        #print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+
+        screen.fill((0,0,0))  # fills background color every frame
+        gameOver = bigkFont.render("GAME OVER", True, (255, 255, 255))
+        screen.blit(gameOver, (440, 300))
+        enterToContinue = kFont.render("Press Enter to Continue", True, (255, 255, 255))
+        screen.blit(enterToContinue, (445, 620))
+
+        pygame.display.update()
+
+        keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_RETURN]:
+            coinCount = 0
+            lives = 5
+            scorecount = 0
+            deflevel = 1
+            pistolAmmo = 25
+            akAmmo = 5
+
+            main()
+
+
+
+
+
+        for event in pygame.event.get():  # quits the game if the x button is pushed
+            if event.type == pygame.QUIT:
+                sys.exit()
 
 def main():  # main game
     global coinCount
@@ -67,14 +108,12 @@ def main():  # main game
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 P",
             "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *       P",
-            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =      =                   =  =        *C       P",
-            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =      =                   =  =       CCCC      P",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C       P",
+            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     level_width = len(level[0]) * TILE_SIZE
     level_height = len(level) * TILE_SIZE
-
-    kFont = pygame.font.Font("assets/font/5x5.ttf", 30)
 
     entities = pygame.sprite.Group()  # creates entities group which can be tracked
     players = pygame.sprite.Group()  # creates players group which can be tracked
@@ -182,7 +221,11 @@ def main():  # main game
         lives -= 1
         pistolAmmo = 25
         akAmmo = 5
-        main()
+
+        if lives <= 0:
+            gameOver()
+        else:
+            main()
 
     running = True
     while running:  # game loop
@@ -788,7 +831,6 @@ class Laser(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
-
 
 
 main()  # run the main game loop
