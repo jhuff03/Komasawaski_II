@@ -298,8 +298,11 @@ def main():  # main game
         for miniBoss in miniBosses:  # Handle when enemies fire
             miniBoss.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
             if miniBoss.bulletCooldown <= 0:
-                Laser((miniBoss.rect.x + 16, miniBoss.rect.y + 16), miniBoss.direction, True, True, entities,
-                       playerKillers, bullets)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                miniBoss.shooting = True
+                if miniBoss.direction == "left":
+                    Laser((miniBoss.rect.x - 100, miniBoss.rect.y + 64), miniBoss.direction, True, True, entities, playerKillers, bullets)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                else:
+                    Laser((miniBoss.rect.x + 64, miniBoss.rect.y + 64), miniBoss.direction, True, True, entities, playerKillers, bullets)  # spawn new bullet at the enemy's center, going in the enemy's direction
                 miniBoss.bulletCooldown = 80
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
@@ -656,7 +659,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy.png'), True, False)
             elif self.animationState == 1:
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy2.png'), True, False)
-            elif self.animationState == 3:
+            elif self.animationState == 2:
                 self.image = pygame.transform.flip(pygame.image.load('assets/enemy3.png'), True, False)
             else:
                 self.animationState = 0
@@ -758,6 +761,12 @@ class MiniBoss(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/miniboss.png')
         self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
 
+        self.animationCooldown = 0
+        self.animationState = 0
+
+        self.shooting = False
+        self.shootingCooldown = 0
+
         self.health = 50
         self.jumpStrength = 15
         self.jumpCooldown = 200
@@ -781,6 +790,49 @@ class MiniBoss(pygame.sprite.Sprite):
 
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
+
+        self.animate()
+    def animate(self):
+        self.animationCooldown -= 1
+
+        if self.animationCooldown <= 0:
+            self.animationState += 1
+            self.animationCooldown = 15
+
+        if self.direction == "right":
+
+            if self.animationState == 0:
+                self.image = pygame.image.load('assets/miniboss_walk_1.png')
+            elif self.animationState == 1:
+                self.image = pygame.image.load('assets/miniboss1.png')
+            elif self.animationState == 2:
+                self.image = pygame.image.load('assets/miniboss_walk_2.png')
+            elif self.animationState == 3:
+                self.image = pygame.image.load('assets/miniboss1.png')
+            else:
+                self.animationState = 0
+        elif self.direction == "left":
+
+            if self.animationState == 0:
+                self.image = pygame.transform.flip(pygame.image.load('assets/miniboss_walk_1.png'), True, False)
+            elif self.animationState == 1:
+                self.image = pygame.transform.flip(pygame.image.load('assets/miniboss1.png'), True, False)
+            elif self.animationState == 2:
+                self.image = pygame.transform.flip(pygame.image.load('assets/miniboss_walk_2.png'), True, False)
+            elif self.animationState == 3:
+                self.image = pygame.transform.flip(pygame.image.load('assets/miniboss1.png'), True, False)
+            else:
+                self.animationState = 0
+
+        if self.shooting:
+            self.shootingCooldown -= 1
+            if self.direction == "left":
+                self.image = pygame.transform.flip(pygame.image.load('assets/miniboss_shoot.png'), True, False)
+            else:
+                self.image = pygame.image.load('assets/miniboss_shoot.png')
+        if self.shootingCooldown <= 0:
+            self.shootingCooldown = 30
+            self.shooting = False
 
 
 class MovingPlatform(pygame.sprite.Sprite):  # similar to smart enemy class but for platforms
