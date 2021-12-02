@@ -24,6 +24,28 @@ deflevel = 1
 pistolAmmo = 25
 akAmmo = 5
 
+def gameBegin():
+    running = True
+    while running:  # game loop
+        clock.tick(100)  # set the FPS to 100
+        #print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+
+        screen.fill((0,0,0))  # fills background color every frame
+        gameBegin = bigkFont.render("KOMASAWASKI II", True, (255, 255, 255))
+        screen.blit(gameBegin, (360, 300))
+        enterToContinue = kFont.render("Press Enter to Begin", True, (255, 255, 255))
+        screen.blit(enterToContinue, (450, 620))
+
+        pygame.display.update()
+
+        keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_RETURN]:
+            return
+
+        for event in pygame.event.get():  # quits the game if the x button is pushed
+            if event.type == pygame.QUIT:
+                sys.exit()
+
 def gameOver():
     global deflevel
     global lives
@@ -41,7 +63,7 @@ def gameOver():
         gameOver = bigkFont.render("GAME OVER", True, (255, 255, 255))
         screen.blit(gameOver, (440, 300))
         enterToContinue = kFont.render("Press Enter to Continue", True, (255, 255, 255))
-        screen.blit(enterToContinue, (445, 620))
+        screen.blit(enterToContinue, (450, 620))
 
         pygame.display.update()
 
@@ -55,10 +77,6 @@ def gameOver():
             akAmmo = 5
 
             main()
-
-
-
-
 
         for event in pygame.event.get():  # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
@@ -832,5 +850,5 @@ class Laser(pygame.sprite.Sprite):
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
 
-
+gameBegin() # start screen
 main()  # run the main game loop
