@@ -32,9 +32,9 @@ def gameBegin():
 
         screen.fill((0,0,0))  # fills background color every frame
         gameBegin = bigkFont.render("KOMASAWASKI II", True, (255, 255, 255))
-        screen.blit(gameBegin, (360, 300))
+        screen.blit(gameBegin, (320, 300))
         enterToContinue = kFont.render("Press Enter to Begin", True, (255, 255, 255))
-        screen.blit(enterToContinue, (450, 620))
+        screen.blit(enterToContinue, (470, 620))
 
         pygame.display.update()
 
@@ -82,6 +82,42 @@ def gameOver():
             if event.type == pygame.QUIT:
                 sys.exit()
 
+def victory():
+    global deflevel
+    global lives
+    global scorecount
+    global pistolAmmo
+    global akAmmo
+    global coinCount
+
+    running = True
+    while running:  # game loop
+        clock.tick(100)  # set the FPS to 100
+        # print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+
+        screen.fill((0,0,0))  # fills background color
+        victory = bigkFont.render("CONGRATS! You Win!", True, (255, 255, 255))
+        screen.blit(victory, (280, 300))
+        playAgain = kFont.render("Press Enter to Play Again", True, (255, 255, 255))
+        screen.blit(playAgain, (430, 620))
+
+        pygame.display.update()
+
+        keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_RETURN]:
+            coinCount = 0
+            lives = 5
+            scorecount = 0
+            deflevel = 1
+            pistolAmmo = 25
+            akAmmo = 5
+            main()
+
+        for event in pygame.event.get():  # quits the game if the x button is pushed
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+
 def main():  # main game
     global coinCount
     global scorecount
@@ -114,14 +150,14 @@ def main():  # main game
             "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P",
             "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P",
             "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P",
-            "]          =   =    S>                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P",
+            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P",
             "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P",
             "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P",
             "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P",
             "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               = S =      PPPP                 P",
             "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 P",
@@ -396,6 +432,8 @@ def main():  # main game
                 if blueKeyCard.rect.colliderect(player.rect):
                     player.keys[0] = True
                     blueKeyCard.kill()
+                    running = False
+                    victory()
 
             if player.activeWeapon == 1:
                 if pygame.mouse.get_pressed() == (True, False, False) and player.shotCooldown <= 0 and pistolAmmo > 0:  # Shoot on right click and only right click. True False False represents only right click out of the three mouse buttons
@@ -849,6 +887,7 @@ class Laser(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
+
 
 gameBegin() # start screen
 main()  # run the main game loop
