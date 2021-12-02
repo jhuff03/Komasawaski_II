@@ -31,10 +31,12 @@ def gameBegin():
         #print("FPS:", int(clock.get_fps())) # print the FPS to the logs
 
         screen.fill((0,0,0))  # fills background color every frame
-        gameBegin = bigkFont.render("KOMASAWASKI II", True, (255, 255, 255))
-        screen.blit(gameBegin, (320, 300))
+        startScreen = pygame.image.load("assets/start.png")
+        screen.blit(startScreen, (0, 0))
+        startText = bigkFont.render("KOMASAWASKI II", True, (255, 255, 255))
+        screen.blit(startText, (330, 60))
         enterToContinue = kFont.render("Press Enter to Begin", True, (255, 255, 255))
-        screen.blit(enterToContinue, (470, 620))
+        screen.blit(enterToContinue, (485, 670))
 
         pygame.display.update()
 
