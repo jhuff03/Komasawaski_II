@@ -24,7 +24,7 @@ coinCount = 0
 
 lives = 5
 scorecount = 0
-deflevel = 1
+deflevel = 2
 pistolAmmo = 25
 akAmmo = 5
 
@@ -180,14 +180,14 @@ def main():  # main game
             "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
             "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P        ",
             "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P        ",
-            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P        ",
+            "]          =   =    S>                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P        ",
             "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P        ",
             "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P        ",
             "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P        ",
             "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P        ",
             "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P        ",
             "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P        ",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               = S =      PPPP                 P        ",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P        ",
             "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P        ",
             "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P        ",
             "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPPPPP",
@@ -198,40 +198,40 @@ def main():  # main game
 
     elif deflevel == 2:
         level = [
-            "      =    =   =                                =                                                                                                                                                  ",
-            "      =    =   =                                =                                                                                                                                                  ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     ",
-            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P     ",
-            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P     ",
-            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P     ",
-            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P     ",
-            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P     ",
-            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P     ",
-            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P     ",
-            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P     ",
-            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P     ",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P     ",
-            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P     ",
-            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P     ",
-            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPP",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *        ;    ",
-            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C        ;    ",
-            "]  S            = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC       ;  ^ ",
-            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                       PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP                              ",
+            "                                                                                                                                       P                                                    P                              ",
+            "                                                                                                                                       P                                                    P                              ",
+            "                                                                                                                                       P                                                    P                              ",
+            "]                                                                                                                                      P                                                    P                              ",
+            "]                                                                                                                                      P                         * ^ *                      P                              ",
+            "]                                                                                                                                      P                      PPPPPPPPPPP                   P                              ",
+            "]                                                                                                                                      P                      ; =     = ;                   P                              ",
+            "]                                            |                    R                     |                                              P                      ; =     = ;                   P                              ",
+            "]                                                                                                                                      P                      ; =     = ;                   P                              ",
+            "]                                                                                                                                      PPPPPPPPPPPPPPPPPPPPPPPPPP     PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "]                                                                                                                                        =                                       |              =  =                      P",
+            "]                                                                                                                                        =                                       |              =  =                      P",
+            "]                                                               S    C >                                                                 =                       PPPPP           |              =  =                      P",
+            "]                                                            PPPPPPPPPPPPP                                                               =                        = =            |              =  =                      P",
+            "]                                                             =         =         *****                                                  =                        = =            |              =  =       *              P",
+            "]                                                             =         =       PPPPPPPPP                                                =                 *CC    = =            |              =  =C     PPP             P",
+            "]                                                             =         =        =     =         ******                                  =                PPPPP   = =            |            PPPPPPPP    = =             P",
+            "]                                                             =         =        =     =        PPPPPPPP                                 =                  =     = =            |              =  =      = =             P",
+            "]                                                             =         =        =     =         =    =       >                          =                  =     = =            |              =  =      = =   J         P",
+            "]                                                             =         =        =     =         =    =      PPP                         =                  =     =>=            |              =  =      =*=             P",
+            "]      |    R                                        |        =    >R   =        =     =      R  =    =       =    |                     =                  =    PPPPP           |              =  =     PPPPP            P",
+            "]                                                            PPPPPPPPPPPPP       =     =         =    =       =                          =                  =     = =            |              =  =      = =             P",
+            "]                                                             =         =        =     =        PPPPPPPP      =                          =                 PPP    = =            |              =  =      = =             P",
+            "]                                                             =         =       PPPPPPPPP        =    =       =                          =                  =     = =      C     |     PPP      PPPP      = =             P",
+            "]    *                                         C              =         =        =     =         =    =       =                       C  =                  =     = =     CC     |      =                 = =             P",
+            "]  <*<*<                                      CC       E      =         =        =     =    >    =    =       =         E            CCC =         E     C  =  >  = =    CCC     |      =                 = =             P",
+            "PPPPPPPPPP|       -                        |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     elif deflevel == 3:
         level = [
@@ -437,9 +437,9 @@ def main():  # main game
 
         for collider in hasCollidePhysics:  # handle non-player collisions. Any entity in the hasCollidePhysics group will collide with floors and walls
             for platform in platforms:
-                if platform.rect.colliderect(collider.rect.x + 2 * collider.vel.x, collider.rect.y, collider.rect.width, collider.rect.height):  # X Collisions
+                if platform.rect.colliderect(collider.rect.x + 1.3 * collider.vel.x, collider.rect.y, collider.rect.width, collider.rect.height):  # X Collisions
                     collider.vel.x = 0
-                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.3 * collider.vel.y, collider.rect.width, collider.rect.height):  # Y collisions
+                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.2 * collider.vel.y, collider.rect.width, collider.rect.height):  # Y collisions
                     if collider.vel.y >= 0:
                         collider.vel.y = 0
 
@@ -1066,7 +1066,7 @@ class Trophy(pygame.sprite.Sprite):
         super().__init__(*groups)  # initializes groups
         self.image = pygame.Surface((32, 32))
         self.image = pygame.image.load('assets/trophy.png')
-        self.rect = self.image.get_rect(center=pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
 
 gameBegin() # start screen
