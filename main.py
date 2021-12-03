@@ -10,6 +10,10 @@ screen = pygame.display.set_mode((width, height))  # creates screen
 screen.fill(background_colour)  # puts color onto screen
 pygame.display.flip()  # updates display settings
 clock = pygame.time.Clock()
+pygame.display.set_caption("Komasawaski II")
+Icon = pygame.image.load("assets/pistol_icon.png")
+pygame.display.set_icon(Icon)
+
 
 TILE_SIZE = 32
 GRAVITY = pygame.math.Vector2(0, 0.3)
@@ -100,20 +104,44 @@ def victory():
         screen.fill((0,0,0))  # fills background color
         victory = bigkFont.render("CONGRATS! You Win!", True, (255, 255, 255))
         screen.blit(victory, (280, 300))
-        playAgain = kFont.render("Press Enter to Play Again", True, (255, 255, 255))
+        playAgain = kFont.render("Press Enter to Continue", True, (255, 255, 255))
         screen.blit(playAgain, (430, 620))
 
         pygame.display.update()
 
         keys = pygame.key.get_pressed()  # pygame keyboard handler
         if keys[pygame.K_RETURN]:
-            coinCount = 0
-            lives = 5
-            scorecount = 0
-            deflevel = 1
+            deflevel += 1
             pistolAmmo = 25
             akAmmo = 5
             main()
+
+        for event in pygame.event.get():  # quits the game if the x button is pushed
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+def credits():
+    running = True
+    while running:  # game loop
+        clock.tick(100)  # set the FPS to 100
+        # print("FPS:", int(clock.get_fps())) # print the FPS to the logs
+
+        screen.fill((0,0,0))  # fills background color
+
+        startText = bigkFont.render("KOMASAWASKI II", True, (255, 255, 255))
+        screen.blit(startText, (330, 60))
+
+        end = kFont.render("Created by William F. Cunnion and Jonas B. Huff", True, (255, 255, 255))
+        screen.blit(end, (280, 300))
+
+        trial = kFont.render("This is a trial version", True, (255, 255, 255))
+        screen.blit(trial, (430, 420))
+
+        trial = kFont.render("More levels coming soon", True, (255, 255, 255))
+        screen.blit(trial, (423, 470))
+
+        pygame.display.update()
+
 
         for event in pygame.event.get():  # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
@@ -133,40 +161,117 @@ def main():  # main game
     # list represents level
     if deflevel == 1:
         level = [
-            "      =    =   =                                =                                                                                                                                             ",
-            "      =    =   =                                =                                                                                                                                             ",
-            "      =    =   =                                =       =                                                                                                                                     ",
-            "      =    =   =                                =       =                                                                                                                                     ",
-            "      =    =   =                                =       =                                                                                                                                     ",
-            "      =    =   =                                =       =               = =                                                                                                                   ",
-            "      =    =   =                                =       =               = =                                                                                                                   ",
-            "      =    =   =                                =       =               = =                                                                                                                   ",
-            "      =    =   =                                =       =               = =                                                                                                                   ",
-            "      =    =   =                                =       =               = =                                                                                                                   ",
-            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P",
-            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P",
-            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P",
-            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P",
-            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P",
-            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P",
-            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P",
-            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P",
-            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P",
-            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               = S =      PPPP                 P",
-            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P",
-            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P",
-            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 P",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *       P",
-            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C       P",
-            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC      P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "      =    =   =                                =                                                                                                                                                     ",
+            "      =    =   =                                =                                                                                                                                                     ",
+            "      =    =   =                                =       =                                                                                                                                             ",
+            "      =    =   =                                =       =                                                                                                                                             ",
+            "      =    =   =                                =       =                                                                                                                                             ",
+            "      =    =   =                                =       =               = =                                                                                                                           ",
+            "      =    =   =                                =       =               = =                                                                                                                           ",
+            "      =    =   =                                =       =               = =                                                                                                                           ",
+            "      =    =   =                                =       =               = =                                                                                                                           ",
+            "      =    =   =                                =       =               = =                                                                                                                           ",
+            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP        ",
+            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P        ",
+            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P        ",
+            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P        ",
+            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P        ",
+            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P        ",
+            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P        ",
+            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P        ",
+            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P        ",
+            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P        ",
+            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P        ",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               = S =      PPPP                 P        ",
+            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P        ",
+            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P        ",
+            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPPPPP",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *        ;      P",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C        ;      P",
+            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC       ;  ^   P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+
+    elif deflevel == 2:
+        level = [
+            "      =    =   =                                =                                                                                                                                                  ",
+            "      =    =   =                                =                                                                                                                                                  ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     ",
+            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P     ",
+            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P     ",
+            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P     ",
+            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P     ",
+            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P     ",
+            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P     ",
+            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P     ",
+            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P     ",
+            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P     ",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P     ",
+            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P     ",
+            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P     ",
+            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPP",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *        ;    ",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C        ;    ",
+            "]  S            = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC       ;  ^ ",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+
+    elif deflevel == 3:
+        level = [
+            "      =    =   =                                =                                                                                                                                                  ",
+            "      =    =   =                                =                                                                                                                                                  ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =                                                                                                                                          ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "      =    =   =                                =       =               = =                                                                                                                        ",
+            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     ",
+            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
+            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P     ",
+            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P     ",
+            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P     ",
+            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P     ",
+            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P     ",
+            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P     ",
+            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P     ",
+            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P     ",
+            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P     ",
+            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P     ",
+            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P     ",
+            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P     ",
+            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPP",
+            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *        ;    ",
+            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C        ;    ",
+            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC       ;S ^ ",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+
+    else:
+        credits()
 
     level_width = len(level[0]) * TILE_SIZE
     level_height = len(level) * TILE_SIZE
@@ -190,6 +295,8 @@ def main():  # main game
     akAmmoPickups = pygame.sprite.Group()
     blueKeyCards = pygame.sprite.Group()
     turners = pygame.sprite.Group()
+    blueDoors = pygame.sprite.Group()
+    trophies = pygame.sprite.Group()
 
 
     # build the level
@@ -221,6 +328,10 @@ def main():  # main game
                 AKAmmo((col * TILE_SIZE, row * TILE_SIZE), entities, akAmmoPickups)
             if level[row][col] == "-":
                 MovingPlatform((col * TILE_SIZE, row * TILE_SIZE), entities, smartEnemies, platforms, smartPlatforms)
+            if level[row][col] == ";":
+                BlueDoor((col * TILE_SIZE, row * TILE_SIZE), entities, platforms, blueDoors)
+            if level[row][col] == "^":
+                Trophy((col * TILE_SIZE, row * TILE_SIZE), entities, trophies)
 
     for player in players:
         totalYScroll = player.rect.y
@@ -343,15 +454,6 @@ def main():  # main game
                         miniBoss.direction = "right"
                     else:
                         miniBoss.direction = "left"
-
-        for enemy in enemies:  # Handle when enemies fire
-            enemy.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
-            if enemy.bulletCooldown <= 0:
-                Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets,
-                       playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
-                enemy.bulletCooldown = 80
-
-        for miniBoss in miniBosses:  # Handle when enemies fire
             miniBoss.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
             if miniBoss.bulletCooldown <= 0:
                 miniBoss.shooting = True
@@ -360,6 +462,13 @@ def main():  # main game
                 else:
                     Laser((miniBoss.rect.x + 64, miniBoss.rect.y + 64), miniBoss.direction, True, True, entities, playerKillers, bullets)  # spawn new bullet at the enemy's center, going in the enemy's direction
                 miniBoss.bulletCooldown = 80
+
+        for enemy in enemies:  # Handle when enemies fire
+            enemy.bulletCooldown -= 1  # each frame of the game, lower the cooldown of the enemy being able to shoot again
+            if enemy.bulletCooldown <= 0:
+                Bullet((enemy.rect.x + 16, enemy.rect.y + 16), enemy.direction, True, True, entities, bullets,
+                       playerKillers)  # spawn new bullet at the enemy's center, going in the enemy's direction
+                enemy.bulletCooldown = 80
 
         for smartEnemy in smartEnemies:  # make sure that smartEnemies turn around when they encounter the invisible turn around flag
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
@@ -437,6 +546,14 @@ def main():  # main game
                 if blueKeyCard.rect.colliderect(player.rect):
                     player.keys[0] = True
                     blueKeyCard.kill()
+
+
+            for blueDoor in blueDoors:  # Handle when enemies fire
+                if player.keys[0] == True:
+                    blueDoor.kill()
+
+            for trophy in trophies:
+                if trophy.rect.colliderect(player.rect):
                     running = False
                     victory()
 
@@ -554,11 +671,6 @@ class Player(pygame.sprite.Sprite):  # player class
 
         if self.vel.y > self.speedMax:
             self.vel.y = self.speedMax
-
-        # if self.vel.x > 0:
-        #     self.direction = "right"
-        # if self.vel.x < 0:
-        #     self.direction = "left"
 
         # FRICTION:
         if self.frictional:
@@ -941,6 +1053,20 @@ class Laser(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.vel.x
         self.rect.y += self.vel.y
+
+class BlueDoor(pygame.sprite.Sprite):  # similar to player class but for platforms
+    def __init__(self, pos, *groups):  # constructs platforms
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))  # platforms are 32x32 and only to be placed every 32 pixels.
+        self.image = pygame.image.load('assets/blue_door.png')
+        self.rect = self.image.get_rect(topleft=pos)  # coords assigned to top left
+
+class Trophy(pygame.sprite.Sprite):
+    def __init__(self, pos, *groups):
+        super().__init__(*groups)  # initializes groups
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load('assets/trophy.png')
+        self.rect = self.image.get_rect(center=pos)
 
 
 gameBegin() # start screen
