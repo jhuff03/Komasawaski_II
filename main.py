@@ -24,7 +24,7 @@ coinCount = 0
 
 lives = 5
 scorecount = 0
-deflevel = 2
+deflevel = 1
 pistolAmmo = 25
 akAmmo = 5
 
@@ -235,40 +235,40 @@ def main():  # main game
 
     elif deflevel == 3:
         level = [
-            "      =    =   =                                =                                                                                                                                                  ",
-            "      =    =   =                                =                                                                                                                                                  ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =                                                                                                                                          ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "      =    =   =                                =       =               = =                                                                                                                        ",
-            "]     =    =   =                                =       =               = =                                                                PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP     ",
-            "]     =    =|  =       R                 |      =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]     =    =   =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]   | =R > = | =                                =       =               = =                                                                | =               =   =     =    =   =            P     ",
-            "]    PPPPPPPP  =                                =       =               = =                                                                | =               =***=     =    =   =            P     ",
-            "]          =   =                                =       =               = =                                                                | =              PPPPPPP    = ** =   =            P     ",
-            "]          =   =     >                       |  =  R    =               = =                  |                                             | =               =   =     PPPPPP   =            P     ",
-            "]          =   =  PPPPPP                        =       =               = =                                                                | =               =   =              =            P     ",
-            "]          =***=  =    =                        =       =               = =                                                                | =               =   =              =            P     ",
-            "]         PPPPPPP =    =                        =       =               = =                                                 <              | =               =   =              =            P     ",
-            "]                 =    =   E                    =       =               = =                                               PPPPP            | =               =   =             PPP           P     ",
-            "]                 =    =  CC                    =       =               = =                                 **>**          = =             | =               =   =                           P     ",
-            "]                 =   PPPPPP                    =       =         |     =>=           R       |           PPPPPPPPP        = =             | =               =   =                           P     ",
-            "]                 =    =  =                     =       =              PPPPP          <                    =     =         = =             | =               =   =      PPPP                 P     ",
-            "]                 =    =  =               <     =       =               = =         |*R*|                  =     =    >    = =             | =              PPPPPPP     =  =      J          P     ",
-            "]                >=    =  =             PPPPP   =       =               = =          PPP                   =     =   PPP   =>=             | =                          =  =                 P     ",
-            "]              PPPPP   =  =              = =    =       =               = =           =                    =     =    =   PPPPP            | =                          =  =                 PPPPPP",
-            "]               = =    =  =              = =    =       =            PPPPPPPPP        =                   PPPPPPPPP   =    = =         C   | =     PPP                  =  =         *        ;    ",
-            "]               = =    =  =              = =    =     * P *                           =                    =     =    =    = =        CC   | =    C =                   =  =        *C        ;    ",
-            "]               = = >  =  =              PPP    =     P P P                        C  =        E           =     =    =    = =       CCC   | =   CC =                   =  =       CCCC       ;S ^ ",
-            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  PPP   PPPPPPP|       -           |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "                                                                                                                                                                                                                           ",
+            "]                                                         =   =                                                                                                                                                           ]",
+            "]                                                         =   =                                                                                                                                                           ]",
+            "]                                                         =   =                                                                                                                                                           ]",
+            "]                                                         =   =                                                                                                                                                           ]",
+            "]                                                         =   =                                                                                                                                                           ]",
+            "]                                                      |  =   =                                                                                                                                                           ]",
+            "]                                                      |  =   =                                                                                                                                                           ]",
+            "]                                                      |  =   =                                                                                                                                                           ]",
+            "]                                                      |  =   =                                                                                                                                                           ]",
+            "]                                                      |  =   =                                         *                                                                   <                                             ]",
+            "]                                                      |  =   =                                      > *** >                                                              PPPPP                                           ]",
+            "]                       ***                            |  =   =                                     PPPPPPPPP                                                              = =                                            ]",
+            "]                     PPPPPPP                          |  =   =                                      =     =                                                               = =                                            ]",
+            "]   | R                =   =                           |  =   =                                      =     =                                                               =>= *******                                    ]",
+            "]                      =   =                           |  =   =                                   >**=     =**>                                                           PPPPPPPPPPPPP                                   ]",
+            "]                      =***=         J                 |  =   =                                   PPPPP   PPPPP                                                            =         =                                    ]",
+            "]                 PPPPPPPPPPP                          |  =   =                |R                  = =     = =                  R|                                ****     =         =                                    ]",
+            "]                  =   =   =                           |  =   =                                    = =     = =                                                   PPPPPP    =         =                                    ]",
+            "]       ****       =   =   =               *           |  =***=                     ***            =*=  S  =*=                      |     R              <        =  =     =   |     =           *******                  ]",
+            "]      PPPPPP      =   =   =              PPP          | PPPPPPP                  PPPPPPP         PPPPPPPPPPPPP                                        PPPPP      =  =     =         =          PPPPPPPPP                 ]",
+            "]       =  =       =   =   =               =           |            C              =   =          ;           ;                     *                   = =       =  =     =         =           =     =                  ]",
+            "]       =  =       =   =   =               =           |            CC             =   =          ;           ;                    *C*                  = =       =  =     =         =           =     =                  ]",
+            "]       =  =       =***=***=               =           |            CCC            =   =       C  ; *E* ^ * * ;  C                *CCC*    E     E   C  = =  E    =  =     =    C    =           =     =       E          ]",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP|-            |PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     else:
         credits()
@@ -319,7 +319,7 @@ def main():  # main game
             if level[row][col] == "*":
                 Coin((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, coins)
             if level[row][col] == "J":
-                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, turners, hasCollidePhysics, miniBosses, playerKillers, playerKillables, smartEnemies)
+                MiniBoss((col * TILE_SIZE + 16, row * TILE_SIZE + 16), entities, hasCollidePhysics, miniBosses, playerKillers, playerKillables, turners)
             if level[row][col] == "=":
                 Support((col * TILE_SIZE, row * TILE_SIZE), entities)
             if level[row][col] == ">":
@@ -427,24 +427,34 @@ def main():  # main game
 
         for turner in turners:  # handle enemy / platform collisions for enemy turnaround
             for platform in platforms:
-                if platform.rect.colliderect(turner.rect.x + 2 * turner.vel.x, turner.rect.y, turner.rect.width, turner.rect.height):  # X Collisions
-                    if turner.direction == "left":
-                        turner.direction = "right"
-                        turner.vel.x = 0
-                    else:
-                        turner.direction = "left"
-                        turner.vel.x = 0
+                    if platform.rect.colliderect(turner.rect.x + 3 * turner.vel.x, turner.rect.y - turner.vel.y, turner.rect.width, turner.rect.height):  # X Collisions
+                        if turner.direction == "left":
+                            turner.direction = "right"
+                            turner.vel.x = 0
+                        else:
+                            turner.direction = "left"
+                            turner.vel.x = 0
 
         for collider in hasCollidePhysics:  # handle non-player collisions. Any entity in the hasCollidePhysics group will collide with floors and walls
             for platform in platforms:
-                if platform.rect.colliderect(collider.rect.x + 1.3 * collider.vel.x, collider.rect.y, collider.rect.width, collider.rect.height):  # X Collisions
-                    collider.vel.x = 0
-                if platform.rect.colliderect(collider.rect.x, collider.rect.y + 1.2 * collider.vel.y, collider.rect.width, collider.rect.height):  # Y collisions
-                    if collider.vel.y >= 0:
+                if platform.rect.colliderect(collider.rect):  # X Collisions
+                    # if collider.vel.x > 0:
+                    #     collider.direction = "left"
+                    #
+                    # if collider.vel.x < 0:
+                    #     collider.direction = "right"
+
+                    if collider.vel.y > 0:
+                        collider.rect.bottom = platform.rect.top
+                        collider.onGround = True
+                        collider.yvel = 0
+                    if collider.vel.y < 0:
+                        collider.rect.top = platform.rect.bottom
+                    if collider.rect.top == platform.rect.bottom:
+                        collider.vel.y = 0
+                    if collider.onGround:
                         collider.vel.y = 0
 
-                    if collider.vel.y < 0:
-                        collider.vel.y = 0
 
         for miniBoss in miniBosses:
             for smartEnemyTurnTrigger in smartEnemyTurnTriggers:
