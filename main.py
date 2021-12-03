@@ -947,7 +947,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.shooting = False
         self.shootingCooldown = 0
 
-        self.health = 50
+        self.health = 60
         self.jumpStrength = 15
         self.jumpCooldown = 200
         self.bulletCooldown = random.randrange(70, 90)
