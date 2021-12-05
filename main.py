@@ -6,7 +6,7 @@ pygame.init()
 
 background_colour = (100, 100, 100)  # rgb colors - this is dark gray
 (width, height) = (1280, 720)  # resolution of game window
-screen = pygame.display.set_mode((width, height))  # creates screen
+screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)  # creates screen
 screen.fill(background_colour)  # puts color onto screen
 pygame.display.flip()  # updates display settings
 clock = pygame.time.Clock()
