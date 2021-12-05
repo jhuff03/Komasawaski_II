@@ -1091,6 +1091,5 @@ class Trophy(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/trophy.png')
         self.rect = self.image.get_rect(topleft=pos)
 
-
 gameBegin() # start screen
 main()  # run the main game loop
