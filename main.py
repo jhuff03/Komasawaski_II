@@ -47,6 +47,8 @@ def gameBegin():
         keys = pygame.key.get_pressed()  # pygame keyboard handler
         if keys[pygame.K_RETURN]:
             return
+        if keys[pygame.K_ESCAPE]:
+            sys.exit()
 
         for event in pygame.event.get():  # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
@@ -74,6 +76,8 @@ def gameOver():
         pygame.display.update()
 
         keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_ESCAPE]:
+            sys.exit()
         if keys[pygame.K_RETURN]:
             coinCount = 0
             lives = 5
@@ -110,6 +114,8 @@ def victory():
         pygame.display.update()
 
         keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_ESCAPE]:
+            sys.exit()
         if keys[pygame.K_RETURN]:
             deflevel += 1
             pistolAmmo = 25
@@ -142,6 +148,9 @@ def credits():
 
         pygame.display.update()
 
+        keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_ESCAPE]:
+            sys.exit()
 
         for event in pygame.event.get():  # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
@@ -413,6 +422,10 @@ def main():  # main game
         for event in pygame.event.get():  # quits the game if the x button is pushed
             if event.type == pygame.QUIT:
                 sys.exit()
+
+        keys = pygame.key.get_pressed()  # pygame keyboard handler
+        if keys[pygame.K_ESCAPE]:
+            sys.exit()
 
         """
         Below is the scrolling code and technically the movement code of the player. Instead of moving the player around 
